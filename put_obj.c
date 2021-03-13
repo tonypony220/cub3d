@@ -203,7 +203,7 @@ void		put_player(t_vars *vars)
 			//char block2 = *(vars->map->map
 			//			   + (int)(cords.on_map[X])
 			//			   + vars->map->width * (int)(cords.on_map[Y]));
-			if (block != '0')// && block2 != '0')
+			if (block != '0' && block != 'N')// && block2 != '0')
 			{
 				cords.wall_reached = 1;
 				pixel_put(vars->data, (int) cords.on_map[X],
@@ -249,21 +249,22 @@ void		put_player(t_vars *vars)
 		//					  vars->map->resolution_hight - 1,
 		//					  color2);
 
-		///	put_vertical_line(vars, x,
-		///			 (vars->map->resolution_hight >> 1) - (line_len >> 1),
-		///			 vars->map->resolution_hight / 2 + line_len / 2 ,
-		///			 color2);
+			//put_vertical_line(vars, x,
+			//		 (vars->map->resolution_hight >> 1) - (line_len >> 1),
+			//		 vars->map->resolution_hight / 2 + line_len / 2 ,
+			//		 color2);
 			/////
 
-			cords.on_wall = vars->player[cords.side]
-					+ cords.perpWallDist * cords.ray_dir[cords.side];
-			cords.on_wall -= floor(cords.on_wall);
 
-			cords.tex[X] = (int)(cords.on_wall * (double)TEX_WIDTH);
-			if ((cords.side == X && cords.ray_dir[X] > 0)  // EAST
-				||
-				(cords.side == Y && cords.ray_dir[Y] < 0)) // NORTH
-					cords.tex[X] = TEX_WIDTH - cords.tex[X] - 1;
+			////cords.on_wall = vars->player[cords.side]
+			////		+ cords.perpWallDist * cords.ray_dir[cords.side];
+			////cords.on_wall -= floor(cords.on_wall);
+
+			////cords.tex[X] = (int)(cords.on_wall * (double)TEX_WIDTH);
+			////if ((cords.side == X && cords.ray_dir[X] > 0)  // EAST
+			////	||
+			////	(cords.side == Y && cords.ray_dir[Y] < 0)) // NORTH
+			////		cords.tex[X] = TEX_WIDTH - cords.tex[X] - 1;
 
 
 
