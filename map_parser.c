@@ -25,7 +25,7 @@ int		map_size_parser(char *filename, t_map *map, int *data)
 		res = get_next_line(fd, &line);
 		if (res < 0)
 		{
-			printf("%s\n", strerror(errno));
+			printf("ERROR >> %s\n", strerror(errno));
 			return (-1);
 			// TODO
 		}

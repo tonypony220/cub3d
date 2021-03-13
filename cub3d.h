@@ -80,7 +80,7 @@ int     		render_next_frame(t_vars *vars);
 t_map			*map_parser(char *filename);
 int				logn(long n, unsigned long base, int unsig, int islong);
 int				create_trgb(int t, int r, int g, int b);
-void        	pixel_put(t_data *data, int x, int y, int color);
+void        	pixel_put(t_vars *vars, int x, int y, int color);
 void			fill_screen(t_vars *vars, int color);
 void			fill_half_screen(t_vars *vars, int which_half, int color);
 void			fill_square(t_map *map, int x, int y, char *new_map, int times);

@@ -28,7 +28,7 @@ void put_map(t_vars *vars)
 		while (++i < vars->map->width)
 		{
 			val = *(vars->map->map + i + (vars->map->width * j));
-			pixel_put(vars->data, i, j, color_by_symbol(val));
+			pixel_put(vars, i, j, color_by_symbol(val));
 		}
 	}
 }

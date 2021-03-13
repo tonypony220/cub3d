@@ -129,6 +129,20 @@ int   mouse2_hook(int button, int x,int y)
 //		vars->player[ROTATE] += 0.01 * sing;
 //	}
 //}
+void	put_tex(t_vars *vars)
+{
+	int  y = -1, x;
+	while (++y < TEX_HEGHT)
+	{
+		x = -1;
+		while (++x < TEX_WIDTH)
+			continue;
+//			printf("%d",*(vars->textures[0] + TEX_HEGHT * y + x) );
+		//	pixel_put(vars, x, y,
+		//			  *(vars->textures[0] + TEX_HEGHT * y + x));
+	}
+
+}
 
 int     render_next_frame(t_vars *vars)
 {
@@ -144,6 +158,8 @@ int     render_next_frame(t_vars *vars)
 	if (RESIZE < 30)
 		put_map(vars);
 	put_player(vars);
+	put_tex(vars); //del
+
 	//while (radius >= 0)
 	//{
 	//	put_circle(img, radius,
@@ -176,7 +192,7 @@ int     		main(int argc, char **argv)
 	vars.map = map_parser(argv[1]); // if no map
 //	write(1, "Parsed\n", 7);
 	//load_textures(&vars);
-	//generate_textures(&vars);
+	generate_textures(&vars);
 	mlx = mlx_init();
 	img.img = mlx_new_image(mlx, vars.map->resolution_width, vars.map->resolution_hight);
 	win = mlx_new_window(mlx,

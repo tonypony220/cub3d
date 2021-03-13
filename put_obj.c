@@ -22,7 +22,7 @@ void		fill_half_screen(t_vars *vars, int which_half, int color)
 	while (y++ < fill_to)
 	{
 		while (x++ < vars->map->resolution_width)
-			pixel_put(vars->data, x, y, color);
+			pixel_put(vars, x, y, color);
 		x = 0;
 		//color += 1 * (- 1 * which_half);
 	}
@@ -38,7 +38,7 @@ void		fill_screen(t_vars *vars, int color)
 	while (y++ < vars->map->resolution_hight)
 	{
 		while (x++ < vars->map->resolution_width)
-			pixel_put(vars->data, x, y, color);
+			pixel_put(vars, x, y, color);
 		x = 0;
 	}
 }
@@ -60,7 +60,7 @@ void		put_square(t_vars *vars, int x, int y, int side, int clr)
 	{
 		j = x - 1;
 		while (++j < (x + side))
-			pixel_put(vars->data, j, jj, clr);
+			pixel_put(vars, j, jj, clr);
 		jj++;
 	}
 }
@@ -74,7 +74,7 @@ void		put_vertical_line(t_vars *vars, int x, int y_up,
 		y_down = vars->map->resolution_hight - 1;
 	while (y_down > y_up)
 	{
-		pixel_put(vars->data, x, y_up, color);
+		pixel_put(vars, x, y_up, color);
 		y_up++;
 	}
 }
@@ -206,11 +206,11 @@ void		put_player(t_vars *vars)
 			if (block != '0' && block != 'N')// && block2 != '0')
 			{
 				cords.wall_reached = 1;
-				pixel_put(vars->data, (int) cords.on_map[X],
+				pixel_put(vars, (int) cords.on_map[X],
 						  (int) cords.on_map[Y],
 						  color);
 			}
-			pixel_put(vars->data, (int) cords.on_map[X],
+			pixel_put(vars, (int) cords.on_map[X],
 					  (int) cords.on_map[Y],
 					  color + 100);
 			//printf("move %d %d\n", cords.move[X], cords.move[Y]);
@@ -253,19 +253,19 @@ void		put_player(t_vars *vars)
 			//		 (vars->map->resolution_hight >> 1) - (line_len >> 1),
 			//		 vars->map->resolution_hight / 2 + line_len / 2 ,
 			//		 color2);
-			/////
 
 
-			////cords.on_wall = vars->player[cords.side]
-			////		+ cords.perpWallDist * cords.ray_dir[cords.side];
-			////cords.on_wall -= floor(cords.on_wall);
+			cords.on_wall = vars->player[cords.side]
+					+ cords.perpWallDist * cords.ray_dir[cords.side];
+			cords.on_wall -= floor(cords.on_wall);
 
-			////cords.tex[X] = (int)(cords.on_wall * (double)TEX_WIDTH);
-			////if ((cords.side == X && cords.ray_dir[X] > 0)  // EAST
-			////	||
-			////	(cords.side == Y && cords.ray_dir[Y] < 0)) // NORTH
-			////		cords.tex[X] = TEX_WIDTH - cords.tex[X] - 1;
+			cords.tex[X] = (int)(cords.on_wall * (double)TEX_WIDTH);
+			if ((cords.side == X && cords.ray_dir[X] > 0)  // EAST
+				||
+				(cords.side == Y && cords.ray_dir[Y] < 0)) // NORTH
+					cords.tex[X] = TEX_WIDTH - cords.tex[X] - 1;
 
+			put_textured_line(vars, line_len, &cords, x);
 
 
 
@@ -291,6 +291,8 @@ void		put_player(t_vars *vars)
 // 0110 6
 // 0111 7
 
+
+
 void			put_textured_line(t_vars *vars, int line_len, t_ray *cords,
 						 int x)
 {
@@ -298,21 +300,23 @@ void			put_textured_line(t_vars *vars, int line_len, t_ray *cords,
 	double tex_pos;
 	int start_of_line;
 	int end_of_line; // not same as used for vertical line in tutorial
-	int y;
 
 	start_of_line = (vars->map->resolution_hight >> 1) - (line_len >> 1);
 	start_of_line *= start_of_line > 0;
+	end_of_line = (vars->map->resolution_hight >> 1) + (line_len >> 1);
+	if (end_of_line > vars->map->resolution_hight)
+		end_of_line = (vars->map->resolution_hight - 1);
 	shift = 1.0 * TEX_HEGHT / line_len;
-	tex_pos = ((start_of_line
-			    - (vars->map->resolution_hight >> 1) + (line_len >> 1)));
-	y = start_of_line;
-	while (y < end_of_line)
+	tex_pos = ((start_of_line - (vars->map->resolution_hight >> 1)
+				+ (line_len >> 1)) * shift);
+	while (start_of_line < end_of_line)
 	{
 		cords->tex[Y] = (int)tex_pos & TEX_HEGHT - 1;
-		tex_pos += 1;
-		pixel_put(vars->data, x, y,
-				  *(vars->textures[0] + TEX_HEGHT * cords->tex[Y] +
-				  cords->tex[X]));
+		tex_pos += shift;
+		pixel_put(vars, x, start_of_line,
+			*(vars->textures[0] + TEX_HEGHT * cords->tex[Y] +
+			cords->tex[X]));
+		start_of_line++;
 	}
 }
 
