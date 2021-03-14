@@ -46,14 +46,6 @@ int		map_size_parser(char *filename, t_map *map, int *data)
 	return (data[NUMBER_LINE_MAP_FROM]);
 }
 
-#define NO 0
-#define SO 1
-#define WE 2
-#define EA 3
-#define S  4
-#define F  5
-#define C  6
-#define NUM_MAP_PATHS 5
 
 int		parse_color(char* line, int i, t_map *map)
 {
@@ -98,7 +90,7 @@ void	parse_line(char *line,  t_map *map)
 	i = -1;
 	while (++i < 5)
 	{
-		if ((p = ft_strnstr(texture_identifiers[i], line, 3))
+		if ((p = ft_strnstr(texture_identifiers[i], line, 4))
 			&& (map->path_provided |= (1 << i)))
 				map->texture_path[i] = ft_strtrim(p + 2, " ");
 	}
@@ -180,6 +172,7 @@ int			validate_map(t_map *map)
 	i = -1;
 	while (++i < NUM_MAP_PATHS)
 	{
+		printf("path tex %d -> %s\n", i, map->texture_path[i]);
 		if (map->path_provided & 1 << i && !map->texture_path[i])
 			return (0);
 	}

@@ -132,14 +132,17 @@ int   mouse2_hook(int button, int x,int y)
 void	put_tex(t_vars *vars)
 {
 	int  y = -1, x;
+	int tex_x ;
 	while (++y < TEX_HEGHT)
 	{
-		x = -1;
-		while (++x < TEX_WIDTH)
-			continue;
-//			printf("%d",*(vars->textures[0] + TEX_HEGHT * y + x) );
-		//	pixel_put(vars, x, y,
-		//			  *(vars->textures[0] + TEX_HEGHT * y + x));
+		x = vars->map->resolution_width - TEX_WIDTH - 1;
+		tex_x =0 ;
+		while (++x < vars->map->resolution_width)
+		{
+			pixel_put(vars, x, y,*(vars->textures[0] + TEX_HEGHT * y + tex_x));
+			tex_x++;
+		}
+
 	}
 
 }
@@ -191,9 +194,11 @@ int     		main(int argc, char **argv)
 	}
 	vars.map = map_parser(argv[1]); // if no map
 //	write(1, "Parsed\n", 7);
-	//load_textures(&vars);
 	generate_textures(&vars);
+	printf("path NO %s\n", vars.map->texture_path[NO]);
 	mlx = mlx_init();
+	vars.mlx = mlx;
+	load_texture(&vars, 0);
 	img.img = mlx_new_image(mlx, vars.map->resolution_width, vars.map->resolution_hight);
 	win = mlx_new_window(mlx,
 					  	 vars.map->resolution_width,
@@ -214,6 +219,7 @@ int     		main(int argc, char **argv)
 	vars.mlx = mlx;
 	vars.win = win;
 	vars.data = &img;
+	printf("ERROR -> %s\n", strerror(errno));
 
 	mlx_hook(win, keyPress, 0, exit_hook, &vars);
 	mlx_hook(win, buttonPress, ButtonPressMask, mouse_hook, &vars);

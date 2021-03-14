@@ -18,7 +18,7 @@
 #define TEX_WIDTH 64
 #define TEX_HEGHT 64
 
-#define RESIZE 10
+#define RESIZE 1
 
 #define X 0
 #define Y 1
@@ -36,6 +36,15 @@
 #define COUNTER 1
 #define CURRENT_LEN 2
 #define CHAR_OF_EMPTY_SPACE '.'
+
+#define NO 0
+#define SO 1
+#define WE 2
+#define EA 3
+#define S  4
+#define F  5
+#define C  6
+#define NUM_MAP_PATHS 5
 
 typedef struct  s_map
 {
@@ -88,8 +97,8 @@ int				circle_combine_cords_gen(double *cords, double x, double y);
 void			put_circle(t_data img, int radius,
 				    	   int cord_x, int cord_y,
 					   	   int color);
-void load_textures(t_vars *vars);
-void generate_textures(t_vars *vars);
+void 			load_texture(t_vars *vars, char num);
+void 			generate_textures(t_vars *vars);
 
 #define  keyPress         2
 #define  keyRelease       3
