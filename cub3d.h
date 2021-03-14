@@ -77,6 +77,7 @@ typedef struct  s_vars
 	void        *win;
 	t_data		*data;
 	int 		*textures[5];
+	t_data		*texs[5];
 	int			move;
 	double		player[5];
 }               t_vars;

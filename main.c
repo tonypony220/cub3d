@@ -161,7 +161,7 @@ int     render_next_frame(t_vars *vars)
 	if (RESIZE < 30)
 		put_map(vars);
 	put_player(vars);
-	put_tex(vars); //del
+	//put_tex(vars); //del
 
 	//while (radius >= 0)
 	//{
@@ -195,19 +195,23 @@ int     		main(int argc, char **argv)
 	vars.map = map_parser(argv[1]); // if no map
 //	write(1, "Parsed\n", 7);
 	generate_textures(&vars);
-	printf("path NO %s\n", vars.map->texture_path[NO]);
 	mlx = mlx_init();
 	vars.mlx = mlx;
+	printf("ERROR -> %s\n", strerror(errno));
 	load_texture(&vars, 0);
-	img.img = mlx_new_image(mlx, vars.map->resolution_width, vars.map->resolution_hight);
+	printf("path NO %s\n", vars.map->texture_path[NO]);
 	win = mlx_new_window(mlx,
-					  	 vars.map->resolution_width,
-					  	 vars.map->resolution_hight, "Hoba!");
-	img.addr = mlx_get_data_addr(img.img,
+						 vars.map->resolution_width,
+						 vars.map->resolution_hight, "Hoba!");
+
+	vars.data = &img;
+	printf("vars.data-> %d, %d\n", vars.data->img, vars.data->addr);
+	vars.data->img = mlx_new_image(mlx, vars.map->resolution_width, vars.map->resolution_hight);
+	vars.data->addr = mlx_get_data_addr(img.img,
 							     &img.bits_per_pixel,
 							     &img.line_length,
 								 &img.endian);
-	img.buffer = ft_calloc(sizeof(int)
+	vars.data->buffer = ft_calloc(sizeof(int)
 			* vars.map->resolution_hight * vars.map->resolution_width, 1);
 //	printf("bits per pix = %d, line_lenght = %d\n",
 //		img.bits_per_pixel, img.line_length);
@@ -218,7 +222,7 @@ int     		main(int argc, char **argv)
 	vars.player[Y] = (double)vars.map->respawn[Y];
 	vars.mlx = mlx;
 	vars.win = win;
-	vars.data = &img;
+	//vars.data = &img;
 	printf("ERROR -> %s\n", strerror(errno));
 
 	mlx_hook(win, keyPress, 0, exit_hook, &vars);

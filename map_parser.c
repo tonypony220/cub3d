@@ -90,9 +90,12 @@ void	parse_line(char *line,  t_map *map)
 	i = -1;
 	while (++i < 5)
 	{
-		if ((p = ft_strnstr(texture_identifiers[i], line, 4))
+		if ((p = ft_strnstr(line, texture_identifiers[i], 4))
 			&& (map->path_provided |= (1 << i)))
-				map->texture_path[i] = ft_strtrim(p + 2, " ");
+		{
+			printf("tex %d %s found\n", i, p);
+			map->texture_path[i] = ft_strtrim(p + 2, " ");
+		}
 	}
 	while (i < 7)
 	{

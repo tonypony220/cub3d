@@ -30,11 +30,23 @@ void generate_textures(t_vars *vars)
 }
 
 void load_texture(t_vars *vars, char tex_num)
+
 {
 	//void    *mlx_png_file_to_image(void *mlx_ptr, char *file, int *width, int *height);
 	int w;
 	int h;
 	w = TEX_WIDTH;
 	h = TEX_HEGHT;
-	vars->textures[tex_num] = mlx_xpm_file_to_image(vars->mlx, vars->map->texture_path[tex_num], &w, &h);
+	void *img;
+
+	vars->texs[tex_num] = ft_calloc(sizeof(t_data), 1);
+	printf("tex path [%d] '%s'\n", tex_num, vars->map->texture_path[tex_num]);
+	int fd = open(vars->map->texture_path[tex_num], O_RDONLY);
+	printf("fd %d\n", fd);
+	vars->texs[tex_num]->img = mlx_png_file_to_image(vars->mlx, vars->map->texture_path[tex_num], &w, &h);
+	printf("ret %p\n", vars->texs[tex_num]->img);
+	//vars->textures[tex_num] = mlx_get_data_addr(vars->texs[tex_num]->img,
+	//							 &vars->texs[tex_num]->bits_per_pixel,
+	//							 &vars->texs[tex_num]->line_length,
+	//							 &vars->texs[tex_num]->endian);
 }
