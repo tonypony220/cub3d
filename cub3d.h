@@ -84,6 +84,24 @@ typedef struct  s_vars
 	double		player[5];
 }               t_vars;
 
+typedef struct  s_ray
+{
+	double		dir[2];
+	int			move[2];
+	double		plane[2];
+
+	double 		on_map[2];
+	double		ray_dir[2];
+	double 		ray_len[2];
+	double 		delta_len[2];
+	double 		perpWallDist;
+	double		on_wall;
+	int			tex[2];
+	int			wall_reached;
+	int			side; //
+	int			cur_tex;
+}               t_ray;
+
 void 			put_map(t_vars *vars);
 void			put_player(t_vars *vars);
 void			resize_map(t_map *map, int times);
@@ -104,6 +122,7 @@ int 			load_texture(t_vars *vars, char num);
 int				load_textures(t_vars *vars);
 int 			generate_texture(t_vars *vars, char i);
 int				cub_exit(t_vars *vars, int exit_code);
+void			find_x_texture_cord(t_ray *crds, t_vars *vars);
 
 #define  keyPress         2
 #define  keyRelease       3

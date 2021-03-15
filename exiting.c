@@ -1,6 +1,5 @@
 #include "cub3d.h"
 
-
 void		free_map(t_map *map)
 {
 	int 	i;
@@ -30,14 +29,23 @@ void		free_texs(t_vars *vars)
 	}
 }
 
-int 		cub_exit(t_vars vars, int exit_code)
+int 		cub_exit(t_vars *vars, int exit_code)
 {
 	if (vars->map)
 		free_map(vars->map);
 	free_texs(vars);
+	if (vars->data->img)
+		mlx_destroy_image(vars->mlx, vars->data->img);
+	if (vars->data->buffer)
+		free(vars->data->buffer);
+	if (vars->win)
+		mlx_destroy_window(vars->mlx, vars->win);
+	///if (vars->mlx) ???
 
-	printf("ERROR -> %s\n", strerror(errno));
-	mlx_destroy_window(vars->mlx, vars->win);
-	mlx_destroy_image(vars->mlx, vars->data->img);
+	if (exit_code)
+	{
+		printf("ERROR\n");
+		printf("errno: '%s'\n", strerror(errno));
+	}
 	return (exit_code);
 }

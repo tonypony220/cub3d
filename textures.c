@@ -43,14 +43,17 @@ int load_textures(t_vars *vars)
 	i = -1;
 	while (++i < NUM_MAP_PATHS)
 	{
-		if (!load_texture(vars, i) && BEHAVE_HARD)
-			return (0);
-		else
-		{
-			if (!generate_texture(vars, i))
+		if (vars->map->path_provided & (1 << i)
+			&& !load_texture(vars, i)
+			&& BEHAVE_HARD)
 				return (0);
-		}
+		///else
+		///{
+		///	if (!generate_texture(vars, i))
+		///		return (0);
+		///}
 	}
+	printf("loaded texs\n");
 	return (1);
 }
 
@@ -68,12 +71,11 @@ int load_texture(t_vars *vars, char tex_num)
 	vars->texs[tex_num] = ft_calloc(sizeof(t_data), 1);
 	printf("tex path [%d] '%s'\n", tex_num, vars->map->texture_path[tex_num]);
 	int fd = open(vars->map->texture_path[tex_num], O_RDONLY);
-	printf("w %d\n", w);
+	//printf("w %d\n", w);
 
 	if (ft_strnstr(vars->map->texture_path[tex_num], ".png", 100))
 		vars->texs[tex_num]->img = mlx_png_file_to_image(
 				vars->mlx, vars->map->texture_path[tex_num], &w, &h);
-
 	else
 		vars->texs[tex_num]->img = mlx_xpm_file_to_image(
 				vars->mlx, vars->map->texture_path[tex_num], &w, &h);
@@ -90,6 +92,6 @@ int load_texture(t_vars *vars, char tex_num)
 								 &vars->texs[tex_num]->line_length,
 								 &vars->texs[tex_num]->endian);
 
-	printf("TEX [%d] W=%d, H=%d, bits %d, len %d", tex_num, w, h, vars->texs[tex_num]->bits_per_pixel, vars->texs[tex_num]->line_length);
+	printf("TEX [%d] W=%d, H=%d, bits %d, len %d\n", tex_num, w, h, vars->texs[tex_num]->bits_per_pixel, vars->texs[tex_num]->line_length);
 	return (1);
 }

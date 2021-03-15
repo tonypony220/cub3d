@@ -177,6 +177,7 @@ int     render_next_frame(t_vars *vars)
 	//}
 	//mlx_clear_window(vars->mlx, vars->win);
 	vars->move++;
+	//vars->move *= vars->move < 8;
 	vars->move *= (vars->move < ((1 << 31) + 1) * -1);
 	mlx_put_image_to_window(vars->mlx, vars->win, img.img, 0, 0);
 	return (1);
@@ -184,8 +185,9 @@ int     render_next_frame(t_vars *vars)
 
 int	create_img_of_screen(t_vars *vars)
 {
-
-	vars->data= NULL;
+	printf("IMG\n");
+	vars->data->img = NULL;
+	vars->data->addr = NULL;
 	if (!(vars->data->img = mlx_new_image(vars->mlx,
 									   		vars->map->resolution_width,
 									   		vars->map->resolution_hight)))
@@ -195,14 +197,16 @@ int	create_img_of_screen(t_vars *vars)
 											   &vars->data->line_length,
 											   &vars->data->endian)))
 		return (0);
-
+	if (!(vars->data->buffer = ft_calloc(sizeof(int)
+			* vars->map->resolution_hight * vars->map->resolution_width, 1)))
+		return (0);
 	return (1);
 }
 
 int     		main(int argc, char **argv)
 {
-	void    	*mlx;
-	void		*win;
+	//void    	*mlx;
+	//void		*win;
 	t_data  	img;
 	t_vars 		vars;
 
@@ -235,9 +239,8 @@ int     		main(int argc, char **argv)
 	//					 vars.map->resolution_width,
 	//					 vars.map->resolution_hight, "Hoba!");
 
-	printf("vars.data-> %d, %d\n", vars.data->img, vars.data->addr);
-	vars.data->buffer = ft_calloc(sizeof(int)
-			* vars.map->resolution_hight * vars.map->resolution_width, 1);
+	printf("vars.data-> %p, %p\n", vars.data->img, vars.data->addr);
+
 //	printf("bits per pix = %d, line_lenght = %d\n",
 //		img.bits_per_pixel, img.line_length);
 	vars.move = 0;
@@ -250,12 +253,12 @@ int     		main(int argc, char **argv)
 	//vars.data = &img;
 	printf("ERROR -> %s\n", strerror(errno));
 
-	mlx_hook(win, keyPress, 0, exit_hook, &vars);
-	mlx_hook(win, buttonPress, ButtonPressMask, mouse_hook, &vars);
-	mlx_hook(win, keyRelease, 0, key_hook, &vars);
+	mlx_hook(vars.win, keyPress, 0, exit_hook, &vars);
+	mlx_hook(vars.win, buttonPress, ButtonPressMask, mouse_hook, &vars);
+	mlx_hook(vars.win, keyRelease, 0, key_hook, &vars);
 	mlx_loop_hook(vars.mlx, render_next_frame, &vars);
 
-	mlx_loop(mlx);	//mlx_loop(mlx);
+	mlx_loop(vars.mlx);	//mlx_loop(mlx);
 	return (1);
 }
 

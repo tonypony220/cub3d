@@ -171,16 +171,15 @@ int			validate_map(t_map *map)
 	i = -1;
 	while (++i < NUM_PARAMS)
 	{
-		printf("path tex %d -> %s\n", i, map->texture_path[i]);
-
 		if (i > S)
 		{
 			if (!(map->path_provided & (1 << i)) && BEHAVE_HARD)
-				return (1);
+				return (0);
 			continue;
 		}
+		printf("path tex %d -> %s\n", i, map->texture_path[i]);
 		if (!(map->path_provided & (1 << i)) && BEHAVE_HARD)
-			return (1);
+			return (0);
 		if (map->path_provided & (1 << i) && !map->texture_path[i])
 		{
 			if (BEHAVE_HARD)
@@ -189,7 +188,7 @@ int			validate_map(t_map *map)
 		}
 	}
 	/* 		map enclosed ? algorithm 	*/
-	return (0);
+	return (1);
 }
 
 
@@ -209,7 +208,7 @@ void		print_map(t_map *map)
 int			check_map_parametrs(t_map *map)
 {
 	printf("ceiling clr = %X\n", map->ceiling_color);
-	printf("flooe clr = %X\n", map->floor_color);
+	printf("floor clr = %X\n", map->floor_color);
 	printf("resolution %d %d\n", map->resolution_hight, map->resolution_width);
 
 	if (!map->resolution_width || !map->resolution_hight)
@@ -229,7 +228,6 @@ t_map		*map_parser(char *filename)
 	int var[LEN_VAR_ARRAY];
 	t_map *map;
 
-	//write(1, "parser\n", 7);
 	if (!(map = ft_calloc(1, sizeof(t_map))))
 		return (0);
 	ft_memset(var, 0, sizeof(var));
@@ -246,5 +244,6 @@ t_map		*map_parser(char *filename)
 		return (0);  /* free wiil inside */
 	if (RESIZE > 1)
 		resize_map(map, RESIZE);
+	write(1, "parser\n", 7);
 	return (map);
 }

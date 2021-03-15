@@ -79,24 +79,9 @@ void		put_vertical_line(t_vars *vars, int x, int y_up,
 	}
 }
 
-typedef struct  s_ray
-{
-	double		dir[2];
-	int			move[2];
-	double		plane[2];
-
-	double 		on_map[2];
-	double		ray_dir[2];
-	double 		ray_len[2];
-	double 		delta_len[2];
-	double 		perpWallDist;
-	double		on_wall;
-	int			tex[2];
-	int			wall_reached;
-	int			side; //
-}               t_ray;
 void			put_textured_line(t_vars *vars, int line_len, t_ray *cords,
 								  int x);
+
 
 void		put_player(t_vars *vars)
 {
@@ -231,10 +216,10 @@ void		put_player(t_vars *vars)
 		if (cords.perpWallDist == 0)
 			line_len = vars->map->resolution_hight;
 
-		color2 = 0xBBbfbbbb;
-		if (cords.side == 1)
-			color2 = 0xBBa19d9d;
-		color2 -= x / 10;
+	//	color2 = 0xBBbfbbbb;
+	//	if (cords.side == 1)
+	//		color2 = 0xBBa19d9d;
+	//	color2 -= x / 10;
 
 			//printf("%d(%d) ", line_len, x);
 		//	put_vertical_line(vars, x,
@@ -251,37 +236,15 @@ void		put_player(t_vars *vars)
 		//					  vars->map->resolution_hight - 1,
 		//					  color2);
 
-			//put_vertical_line(vars, x,
-			//		 (vars->map->resolution_hight >> 1) - (line_len >> 1),
-			//		 vars->map->resolution_hight / 2 + line_len / 2 ,
-			//		 color2);
-
-
-		cords.on_wall = vars->player[!cords.side]
-				+ cords.perpWallDist * cords.ray_dir[!cords.side];
-		cords.on_wall -= floor((cords.on_wall));
-		cords.tex[X] = (int)(cords.on_wall * (double)vars->texs[0]->size[X] / RESIZE);
-	///	if ((cords.side == X && cords.ray_dir[X] > 0)  // EAST
-	///		||
-	///		(cords.side == Y && cords.ray_dir[Y] < 0)) // NORTH
-	///			cords.tex[X] = TEX_WIDTH - cords.tex[X] - 1;
-
+		//put_vertical_line(vars, x,
+		//		 (vars->map->resolution_hight >> 1) - (line_len >> 1),
+		//		 vars->map->resolution_hight / 2 + line_len / 2 ,
+		//		 color2);
+		find_x_texture_cord(&cords, vars);
 		put_textured_line(vars, line_len, &cords, x);
-
-
-
-
 	}
-
-//	vars->player[X] = tmpX;
-//	vars->player[Y] = tmpY;
-
-	//put_square(vars,
-	//		vars->player[X],
-	//		vars->player[Y],
-	//		vars->player[SIZE],
-	//		0x00FF0000 | vars->move << 8);
 }
+
 
 // 0000
 // 0001
@@ -291,6 +254,30 @@ void		put_player(t_vars *vars)
 // 0101 5
 // 0110 6
 // 0111 7
+int		get_pole_by_ray_dir(t_ray *cords)
+{
+	int ret;
+
+	ret = 0;
+	if (cords->side == X)  // EAST
+		ret = (cords->ray_dir[X] > 0) ? EA : WE;
+	else
+		ret = (cords->ray_dir[Y] < 0) ? NO : SO;
+	return (ret);
+
+}
+
+void			find_x_texture_cord(t_ray *cords, t_vars *vars)
+{
+	cords->cur_tex = get_pole_by_ray_dir(cords);
+	cords->on_wall = vars->player[!cords->side]
+			+ cords->perpWallDist * cords->ray_dir[!cords->side];
+	cords->on_wall -= floor((cords->on_wall));
+	cords->tex[X] = (int)(cords->on_wall
+						* (double)vars->texs[cords->cur_tex]->size[X]);// / RESIZE)
+	if (cords->cur_tex == EA || cords->cur_tex == NO)
+		cords->tex[X] = TEX_WIDTH - cords->tex[X] - 1;
+}
 
 void			put_textured_line(t_vars *vars, int line_len,
 						          t_ray *cords, int x)
@@ -299,27 +286,26 @@ void			put_textured_line(t_vars *vars, int line_len,
 	double tex_pos;
 	int start_of_line;
 	int end_of_line; // not same as used for vertical line in tutorial
+	int tex_num;
 
+	tex_num = cords->cur_tex;
 	start_of_line = (vars->map->resolution_hight >> 1) - (line_len >> 1);
 	start_of_line *= start_of_line > 0;
 	end_of_line = (vars->map->resolution_hight >> 1) + (line_len >> 1);
 	if (end_of_line > vars->map->resolution_hight)
 		end_of_line = (vars->map->resolution_hight - 1);
-
-	shift = 1.0 * vars->texs[0]->size[Y] / line_len;
+	shift = 1.0 * vars->texs[tex_num]->size[Y] / line_len;
 	tex_pos = ((start_of_line - (vars->map->resolution_hight >> 1)
 				+ (line_len >> 1)) * shift);
 	while (start_of_line < end_of_line)
 	{
-		cords->tex[Y] = (int)tex_pos & (vars->texs[0]->size[Y] - 1);
+		cords->tex[Y] = (int)tex_pos & (vars->texs[tex_num]->size[Y] - 1);
 		tex_pos += shift;
 		pixel_put(vars, x, start_of_line,
-			*(int*)(vars->texs[0]->addr
-			+ vars->texs[0]->line_length * cords->tex[Y]
-			+ cords->tex[X] * vars->data->bits_per_pixel / 8));
-
-//dst = vars->data->addr + (y * vars->data->line_length + x
-//														* (vars->data->bits_per_pixel / 8));
+			*(int*)(vars->texs[tex_num]->addr
+			+ vars->texs[tex_num]->line_length * cords->tex[Y]
+			+ cords->tex[X] * vars->texs[tex_num]->bits_per_pixel / 8)
+			+ vars->move);
 		start_of_line++;
 	}
 }
