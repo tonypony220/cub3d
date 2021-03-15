@@ -260,7 +260,7 @@ void		put_player(t_vars *vars)
 		cords.on_wall = vars->player[!cords.side]
 				+ cords.perpWallDist * cords.ray_dir[!cords.side];
 		cords.on_wall -= floor((cords.on_wall));
-		cords.tex[X] = (int)(cords.on_wall * (double)TEX_WIDTH / RESIZE);
+		cords.tex[X] = (int)(cords.on_wall * (double)vars->texs[0]->size[X] / RESIZE);
 	///	if ((cords.side == X && cords.ray_dir[X] > 0)  // EAST
 	///		||
 	///		(cords.side == Y && cords.ray_dir[Y] < 0)) // NORTH
@@ -306,16 +306,20 @@ void			put_textured_line(t_vars *vars, int line_len,
 	if (end_of_line > vars->map->resolution_hight)
 		end_of_line = (vars->map->resolution_hight - 1);
 
-	shift = 1.0 * TEX_HEGHT / line_len;
+	shift = 1.0 * vars->texs[0]->size[Y] / line_len;
 	tex_pos = ((start_of_line - (vars->map->resolution_hight >> 1)
 				+ (line_len >> 1)) * shift);
 	while (start_of_line < end_of_line)
 	{
-		cords->tex[Y] = (int)tex_pos & (TEX_HEGHT - 1);
+		cords->tex[Y] = (int)tex_pos & (vars->texs[0]->size[Y] - 1);
 		tex_pos += shift;
 		pixel_put(vars, x, start_of_line,
-			*(vars->textures[0] + TEX_HEGHT * cords->tex[Y] +
-			cords->tex[X]));
+			*(int*)(vars->texs[0]->addr
+			+ vars->texs[0]->line_length * cords->tex[Y]
+			+ cords->tex[X] * vars->data->bits_per_pixel / 8));
+
+//dst = vars->data->addr + (y * vars->data->line_length + x
+//														* (vars->data->bits_per_pixel / 8));
 		start_of_line++;
 	}
 }

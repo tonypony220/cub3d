@@ -139,7 +139,9 @@ void	put_tex(t_vars *vars)
 		tex_x =0 ;
 		while (++x < vars->map->resolution_width)
 		{
-			pixel_put(vars, x, y,*(vars->textures[0] + TEX_HEGHT * y + tex_x));
+			pixel_put(vars, x, y,*(vars->texs[0]->addr
+						+ vars->texs[0]->line_length * y
+						+ vars->texs[0]->bits_per_pixel / 8 *tex_x));
 			tex_x++;
 		}
 
@@ -161,7 +163,9 @@ int     render_next_frame(t_vars *vars)
 	if (RESIZE < 30)
 		put_map(vars);
 	put_player(vars);
-	//put_tex(vars); //del
+	put_tex(vars); //del
+	mlx_string_put(vars->mlx, vars->win, vars->map->resolution_width /2 , 20, 0xFFFFFF,
+						  "HOBA!");
 
 	//while (radius >= 0)
 	//{
@@ -178,6 +182,23 @@ int     render_next_frame(t_vars *vars)
 	return (1);
 }
 
+int	create_img_of_screen(t_vars *vars)
+{
+
+	vars->data= NULL;
+	if (!(vars->data->img = mlx_new_image(vars->mlx,
+									   		vars->map->resolution_width,
+									   		vars->map->resolution_hight)))
+		return (0);
+	if (!(vars->data->addr = mlx_get_data_addr(vars->data->img,
+											   &vars->data->bits_per_pixel,
+											   &vars->data->line_length,
+											   &vars->data->endian)))
+		return (0);
+
+	return (1);
+}
+
 int     		main(int argc, char **argv)
 {
 	void    	*mlx;
@@ -187,30 +208,34 @@ int     		main(int argc, char **argv)
 
 
 	printf("args: %s %s\n", argv[0], argv[1]);
-	if (argc != 2)
+
+	if (argc < 2)
 	{
 		write(1, "No input\n", 9);
 		return (1);
 	}
-	vars.map = map_parser(argv[1]); // if no map
-//	write(1, "Parsed\n", 7);
-	generate_textures(&vars);
-	mlx = mlx_init();
-	vars.mlx = mlx;
-	printf("ERROR -> %s\n", strerror(errno));
-	load_texture(&vars, 0);
-	printf("path NO %s\n", vars.map->texture_path[NO]);
-	win = mlx_new_window(mlx,
-						 vars.map->resolution_width,
-						 vars.map->resolution_hight, "Hoba!");
-
+//	vars.mlx = NULL;
+//	vars.win = NULL;
+	ft_memset(&vars, 0, sizeof(vars));
 	vars.data = &img;
+	if (!(vars.map = map_parser(argv[1]))
+	 || !(vars.mlx = mlx_init())
+	 || !(create_img_of_screen(&vars))
+	 || !(load_textures(&vars))
+	 || !(vars.win = mlx_new_window(vars.mlx,
+								   vars.map->resolution_width,
+								   vars.map->resolution_hight, "Hoba!")))
+		return (cub_exit(&vars, 1));
+
+	//vars.mlx = mlx;
+//	if (load_texture(&vars, 0))
+//		return (1);
+	//printf("path NO %s\n", vars.map->texture_path[NO]);
+	//vars.win = mlx_new_window(vars.mlx,
+	//					 vars.map->resolution_width,
+	//					 vars.map->resolution_hight, "Hoba!");
+
 	printf("vars.data-> %d, %d\n", vars.data->img, vars.data->addr);
-	vars.data->img = mlx_new_image(mlx, vars.map->resolution_width, vars.map->resolution_hight);
-	vars.data->addr = mlx_get_data_addr(img.img,
-							     &img.bits_per_pixel,
-							     &img.line_length,
-								 &img.endian);
 	vars.data->buffer = ft_calloc(sizeof(int)
 			* vars.map->resolution_hight * vars.map->resolution_width, 1);
 //	printf("bits per pix = %d, line_lenght = %d\n",
@@ -220,8 +245,8 @@ int     		main(int argc, char **argv)
 	vars.player[ROTATE] = 0;
 	vars.player[X] = (double)vars.map->respawn[X];
 	vars.player[Y] = (double)vars.map->respawn[Y];
-	vars.mlx = mlx;
-	vars.win = win;
+	//vars.mlx = mlx;
+	//vars.win = win;
 	//vars.data = &img;
 	printf("ERROR -> %s\n", strerror(errno));
 

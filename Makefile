@@ -17,7 +17,7 @@ $(SUBDIRS):
 		#${CC} ${CFLAGS} 	   -c $< -o ${<:.c=.o}
 
 ${NAME}:	${OBJS} $(SUBDIRS)
-		$(CC) ${OBJS} -Lmlx -lmlx -Lgnl -lgnl -Llibft -lft -framework OpenGL -framework AppKit -o $(NAME)
+		$(CC) ${OBJS} -Lmlx -lmlx -Lgnl -lgnl -Llibft -lft -lz -Lz -framework OpenGL -framework AppKit -o $(NAME)
 		#$(CC) ${OBJS} -o $(NAME)
 
 #${NAME}:	fclean	${OBJS} ${HEAD}

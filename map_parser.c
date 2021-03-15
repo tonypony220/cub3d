@@ -65,6 +65,7 @@ int		parse_color(char* line, int i, t_map *map)
 		map->floor_color = create_trgb(0, color[0], color[1], color[2]);
 	else if (i == C)
 		map->ceiling_color = create_trgb(0, color[0], color[1], color[2]);
+	return (0);
 }
 
 void	parse_line(char *line,  t_map *map)
@@ -95,13 +96,16 @@ void	parse_line(char *line,  t_map *map)
 		{
 			printf("tex %d %s found\n", i, p);
 			map->texture_path[i] = ft_strtrim(p + 2, " ");
+			break;
 		}
 	}
 	while (i < 7)
 	{
 		if ((p = ft_strnstr(line, texture_identifiers[i],3)))
 		{
+			map->path_provided |= (1 << i);
 			parse_color(p + 1, i, map);
+			break;
 		}
 		i++;
 	}
@@ -158,30 +162,36 @@ int		parse_map(char *filename, t_map *map, int *var)
 	close(fd);
 }
 
-void		free_map(t_map *map)
-{
-	int i;
-
-	i = -1;
-	while (++i < NUM_MAP_PATHS && map->texture_path[i])
-		free(map->texture_path[i]);
-	free(map->map);
-}
 
 int			validate_map(t_map *map)
 {
+	/* rename to validating params of map */
 	int 	i;
 
 	i = -1;
-	while (++i < NUM_MAP_PATHS)
+	while (++i < NUM_PARAMS)
 	{
 		printf("path tex %d -> %s\n", i, map->texture_path[i]);
-		if (map->path_provided & 1 << i && !map->texture_path[i])
-			return (0);
+
+		if (i > S)
+		{
+			if (!(map->path_provided & (1 << i)) && BEHAVE_HARD)
+				return (1);
+			continue;
+		}
+		if (!(map->path_provided & (1 << i)) && BEHAVE_HARD)
+			return (1);
+		if (map->path_provided & (1 << i) && !map->texture_path[i])
+		{
+			if (BEHAVE_HARD)
+				return (1);
+			map->path_provided &= (0 << i);
+		}
 	}
 	/* 		map enclosed ? algorithm 	*/
-	return (1);
+	return (0);
 }
+
 
 void		print_map(t_map *map)
 {
@@ -201,8 +211,11 @@ int			check_map_parametrs(t_map *map)
 	printf("ceiling clr = %X\n", map->ceiling_color);
 	printf("flooe clr = %X\n", map->floor_color);
 	printf("resolution %d %d\n", map->resolution_hight, map->resolution_width);
+
 	if (!map->resolution_width || !map->resolution_hight)
 	{
+		if (BEHAVE_HARD)
+			return (1);
 		map->resolution_width = SCREEN_WIDTH;
 		map->resolution_hight = SCREEN_HEIGHT;
 	}
@@ -216,7 +229,7 @@ t_map		*map_parser(char *filename)
 	int var[LEN_VAR_ARRAY];
 	t_map *map;
 
-	write(1, "parser\n", 7);
+	//write(1, "parser\n", 7);
 	if (!(map = ft_calloc(1, sizeof(t_map))))
 		return (0);
 	ft_memset(var, 0, sizeof(var));
@@ -224,23 +237,14 @@ t_map		*map_parser(char *filename)
 	//printf("number line from: %d\n width: %d hight: %d",
 	//	var[NUMBER_LINE_MAP_FROM], map->width, map->hight);
 	if (!(map->map = ft_calloc(1, sizeof(char) * map->width * map->hight + 1)))
-	{
-		free(map);
 		return (0);
-	}
 	var[CURRENT_LEN] = var[COUNTER];
 	parse_map(filename, map, var);
 	check_map_parametrs(map);
 	print_map(map);
 	if (!validate_map(map))
-	{
-		printf("MAP ERR\n");
 		return (0);  /* free wiil inside */
-	}
-	resize_map(map, RESIZE);
-			 //  map->resolution_width * map->resolution_hight /
-			 //  map->width * map->hight);
-
-
+	if (RESIZE > 1)
+		resize_map(map, RESIZE);
 	return (map);
 }

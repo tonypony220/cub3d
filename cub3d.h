@@ -1,7 +1,7 @@
 #ifndef CUB3D_H
 # define CUB3D_H
 
-//R 1920 1080
+#define BEHAVE_HARD 0
 
 #include "mlx/mlx.h"
 #include "libft/libft.h"
@@ -44,6 +44,7 @@
 #define S  4
 #define F  5
 #define C  6
+#define NUM_PARAMS 7
 #define NUM_MAP_PATHS 5
 
 typedef struct  s_map
@@ -68,6 +69,7 @@ typedef struct  s_data
 	int         bits_per_pixel;
 	int         line_length;
 	int         endian;
+	int			size[2];
 }               t_data;
 
 typedef struct  s_vars
@@ -98,8 +100,10 @@ int				circle_combine_cords_gen(double *cords, double x, double y);
 void			put_circle(t_data img, int radius,
 				    	   int cord_x, int cord_y,
 					   	   int color);
-void 			load_texture(t_vars *vars, char num);
-void 			generate_textures(t_vars *vars);
+int 			load_texture(t_vars *vars, char num);
+int				load_textures(t_vars *vars);
+int 			generate_texture(t_vars *vars, char i);
+int				cub_exit(t_vars *vars, int exit_code);
 
 #define  keyPress         2
 #define  keyRelease       3
