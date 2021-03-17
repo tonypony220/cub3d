@@ -47,6 +47,23 @@
 #define NUM_PARAMS 7
 #define NUM_MAP_PATHS 5
 
+typedef struct  s_sprite
+{
+	double		cord[2];
+	int 		tex_num;
+}               t_sprite;
+
+typedef struct  s_spr
+{
+	double		relative_cord[2];
+	double		transform[2];
+	int			screen[2];
+	int 		height;
+	int 		width;
+	int			draw[2][2];
+
+}               t_spr;
+
 typedef struct  s_map
 {
 	int 		resolution_width;
@@ -58,6 +75,11 @@ typedef struct  s_map
 	int			floor_color;
 	int			hight;
 	int         width;
+	int			sprite_counter;
+	int			*sprites_order;
+	double 		*sprites_dist;
+	t_sprite	*sprites;
+	double		*zbuf;
 	char        *map;
 }               t_map;
 
@@ -71,6 +93,7 @@ typedef struct  s_data
 	int         endian;
 	int			size[2];
 }               t_data;
+
 
 typedef struct  s_vars
 {
@@ -89,7 +112,6 @@ typedef struct  s_ray
 	double		dir[2];
 	int			move[2];
 	double		plane[2];
-
 	double 		on_map[2];
 	double		ray_dir[2];
 	double 		ray_len[2];
@@ -123,6 +145,9 @@ int				load_textures(t_vars *vars);
 int 			generate_texture(t_vars *vars, char i);
 int				cub_exit(t_vars *vars, int exit_code);
 void			find_x_texture_cord(t_ray *crds, t_vars *vars);
+void			find_distanse_to_sprites(t_vars *vars);
+void			selection_sorting_sprite(double arr_val[], int arr_pos[],
+											int n);
 
 #define  keyPress         2
 #define  keyRelease       3

@@ -10,6 +10,21 @@ int		only_symbols(char *symbols, char *line)
 	return (1);
 }
 
+int		strchrs(char *str, char c)
+/*count number of chars in string */
+{
+	int counter;
+
+	counter = 0;
+	while (*str)
+	{
+		if (*str == c)
+			counter++;
+		str++;
+	}
+	return (counter);
+}
+
 int		map_size_parser(char *filename, t_map *map, int *data)
 {
 	int res;
@@ -38,6 +53,8 @@ int		map_size_parser(char *filename, t_map *map, int *data)
 			&& data[NUMBER_LINE_MAP_FROM]
 			&& map->width < (data[CURRENT_LEN] = ft_strlen(line)))
 				map->width = data[CURRENT_LEN];
+		if (res && data[NUMBER_LINE_MAP_FROM])
+			map->sprite_counter += strchrs(line, '2');
 		free(line);
 		data[COUNTER]++;
 	}
@@ -127,6 +144,12 @@ void 	fill_map(t_map *map, char *line)
 			map->respawn[X] = i;
 			map->respawn[Y] = line_number;
 		}
+		else if (symbol_to_put == '2')
+		{
+			map->sprites[map->sprite_counter].cord[X] = i + 0.5;
+			map->sprites[map->sprite_counter].cord[Y] = line_number + 0.5;
+			map->sprite_counter--;
+		}
 		*(map->map + i++ + line_number * map->width) = symbol_to_put;
 	}
 	//write(1, "fill\n", 5);
@@ -141,11 +164,14 @@ int		parse_map(char *filename, t_map *map, int *var)
 	int res;
 	int fd;
 	char *line;
+	int	tmp_sprite_num;
 
 	write(1, "size\n", 5);
 	line = NULL;
 	var[COUNTER] = 0;
 	res = 1;
+	tmp_sprite_num = map->sprite_counter;
+	map->sprite_counter--; /* for correct index filling*/
 	fd = open(filename, O_RDONLY);
 	while (res > 0)
 	{
@@ -160,6 +186,7 @@ int		parse_map(char *filename, t_map *map, int *var)
 		var[COUNTER]++;
 	}
 	close(fd);
+	map->sprite_counter = tmp_sprite_num;
 }
 
 
@@ -234,13 +261,16 @@ t_map		*map_parser(char *filename)
 	map_size_parser(filename, map, var);
 	//printf("number line from: %d\n width: %d hight: %d",
 	//	var[NUMBER_LINE_MAP_FROM], map->width, map->hight);
-	if (!(map->map = ft_calloc(1, sizeof(char) * map->width * map->hight + 1)))
+	if (!(map->map = ft_calloc(1, sizeof(char) * map->width * map->hight + 1))
+	|| !(map->sprites = ft_calloc(sizeof(t_sprite), map->sprite_counter))
+	|| !(map->sprites_order = ft_calloc(sizeof(int), map->sprite_counter))
+	|| !(map->sprites_dist = ft_calloc(sizeof(double), map->sprite_counter)))
 		return (0);
 	var[CURRENT_LEN] = var[COUNTER];
 	parse_map(filename, map, var);
 	check_map_parametrs(map);
 	print_map(map);
-	if (!validate_map(map))
+	if (!validate_map(map) || !(map->zbuf = ft_calloc(sizeof(double), map->resolution_width)))
 		return (0);  /* free wiil inside */
 	if (RESIZE > 1)
 		resize_map(map, RESIZE);

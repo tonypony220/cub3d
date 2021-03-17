@@ -7,6 +7,14 @@ void		free_map(t_map *map)
 	i = -1;
 	while (++i < NUM_MAP_PATHS && map->texture_path[i])
 		free(map->texture_path[i]);
+	if (map->sprites)
+		free(map->sprites);
+	if (map->sprites_dist)
+		free(map->sprites_dist);
+	if (map->sprites_order)
+		free(map->sprites_order);
+	if (map->zbuf)
+		free(map->zbuf);
 	if (map->map)
 		free(map->map);
 	free(map);
