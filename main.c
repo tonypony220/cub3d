@@ -64,15 +64,12 @@ int   exit_hook(int button, t_vars *vars)
 //	else
 //		counter = 0;
 //	pressed = button;
+	if (button == 53)
+		vars->exit = 1;
 	if (button == 124)
 		vars->player[RAD] += 0.05;
 	if (button == 123)
 		vars->player[RAD] -= 0.05;
-
-	if (button == 53)
-		exit(1);
-	if (counter >= 10)
-		printf("Holded!\n");
 
 	x = vars->player[X]
 			+ move_val// * RESIZE / 12
@@ -92,7 +89,7 @@ int   exit_hook(int button, t_vars *vars)
 		vars->player[Y] = y;
 	}
 		//printf("bad move");
-	/* printf("Pressed: %d\n", button); */
+	printf("Pressed: %d\n", button);
 //	printf("player x[%g] y[%g] ", vars->player[X], vars->player[Y]);
 //	printf("player x[%d] y[%d]\n", (int)round(vars->player[X]),
 //		   (int)round(vars->player[Y]));
@@ -152,16 +149,13 @@ void	put_tex(t_vars *vars)
 int     render_next_frame(t_vars *vars)
 {
 	t_data  img = *(*vars).data;
-	int radius = 1;
-//	if (!vars->move)
-//		return(1);
-	//fill_screen(vars, 0x0F010101);
-
+	if (vars->exit)
+		cub_exit(vars, 0);
 	fill_half_screen(vars, 0, vars->map->ceiling_color);
 	fill_half_screen(vars, 1, vars->map->floor_color);
 //	rotate_camera(vars);
-	if (RESIZE < 30)
-		put_map(vars);
+	//if (RESIZE < 30)
+	//	put_map(vars);
 	put_player(vars);
 	put_tex(vars); //del
 	mlx_string_put(vars->mlx, vars->win, vars->map->resolution_width /2 , 20, 0xFFFFFF,
@@ -210,7 +204,7 @@ int     		main(int argc, char **argv)
 	t_data  	img;
 	t_vars 		vars;
 
-
+	vars.exit = 0;
 	printf("args: %s %s\n", argv[0], argv[1]);
 
 	if (argc < 2)

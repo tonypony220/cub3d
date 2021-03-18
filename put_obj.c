@@ -113,20 +113,18 @@ void		put_player(t_vars *vars)
 	//rad = 0.00;
 	int counter[2];  /// del
 	int rays = vars->map->resolution_width;
-
 	counter[0] = 0;
 	counter[1] = 0;
 	//double tmpX = vars->player[X], tmpY = vars->player[Y];
 	//vars->player[X] = (int)vars->player[X];
 	//vars->player[Y] = (int)vars->player[Y];
-
 	while (++x < rays) //vars->map->resolution_width)
 	{
 		cameraX = 2 * x / (double)rays - 1;// (double)
 		// vars->map->resolution_width - 1;
 		cords.ray_dir[X] = cords.dir[X] + cords.plane[X] * cameraX;
 		cords.ray_dir[Y] = cords.dir[Y] + cords.plane[Y] * cameraX;
-		//printf("camX= %g x=%d ray %g %g\n",cameraX, x, cords.ray_dir[X], cords.ray_dir[Y]);
+	//	printf("camX= %g x=%d ray %g %g\n",cameraX, x, cords.ray_dir[X], cords.ray_dir[Y]);
 		cords.on_map[X] = (int)(vars->player[X]);
 		cords.on_map[Y] = (int)(vars->player[Y]);
 
@@ -191,7 +189,7 @@ void		put_player(t_vars *vars)
 			//char block2 = *(vars->map->map
 			//			   + (int)(cords.on_map[X])
 			//			   + vars->map->width * (int)(cords.on_map[Y]));
-			if (block != '0' && block != 'N')// && block2 != '0')
+			if (block != '0' && block != 'N' && block != '2')// && block2 != '0')
 			{
 				cords.wall_reached = 1;
 				pixel_put(vars, (int) cords.on_map[X],
@@ -244,12 +242,12 @@ void		put_player(t_vars *vars)
 		vars->map->zbuf[x] = cords.perpWallDist;
 		find_x_texture_cord(&cords, vars);
 		put_textured_line(vars, line_len, &cords, x);
-		find_distanse_to_sprites(vars);
-		selection_sorting_sprite(vars->map->sprites_dist,
-								 vars->map->sprites_order,
-								 vars->map->sprite_counter);
-		project_sprite(vars);
 	}
+	find_distanse_to_sprites(vars);
+	selection_sorting_sprite(vars->map->sprites_dist,
+							 vars->map->sprites_order,
+							 vars->map->sprite_counter);
+	project_sprites(vars, &cords);
 }
 
 
@@ -330,103 +328,88 @@ void			find_distanse_to_sprites(t_vars *vars)
 	}
 }
 
-void			project_sprites(t_vars *vars, t_ray *cords)
+void			project_sprites(t_vars *vars, t_ray *cd)
 {
 	int i;
 	double invert;
-	t_spr sprite;
+	int *ord;
+	t_spr spr;
 
 	i = -1;
+	ord = vars->map->sprites_order;
 	while (++i < vars->map->sprite_counter)
 	{
-		sprite.relative_cord[X] =
-				vars->map->sprites[vars->map->sprites_order[i]].cord[X]
-				- vars->player[X];
-		sprite.relative_cord[Y] =
-				vars->map->sprites[vars->map->sprites_order[i]].cord[Y]
-				- vars->player[Y];
-		invert = 1.0 / (cords->plane[Y] * cords->ray_dir[Y]
-					- cords->ray_dir[X] * cords->plane[Y]);
-		sprite.transform[X] = invert
-				* (cords->ray_dir[Y] * sprite.relative_cord[X]
-					- cords->ray_dir[X] * sprite.relative_cord[Y]);
-		sprite.transform[Y] = invert
-				* (-cords->plane[Y] * sprite.relative_cord[X]
-					+ cords->plane[X] * sprite.relative_cord[Y]);
-		sprite.screen[X] = (int)(vars->map->resolution_width / 2)
-				* (1 + sprite.transform[X] / sprite.transform[Y]);
-		find_projection_size(vars, cords, sprite);
+		spr.cr[X] = vars->map->sprites[ord[i]].cord[X] - vars->player[X];
+		spr.cr[Y] = vars->map->sprites[ord[i]].cord[Y] - vars->player[Y];
+		invert = 1.0 /
+				(cd->plane[X] * cd->ray_dir[Y] - cd->ray_dir[X] * cd->plane[Y]);
+		spr.transform[X] = invert * (cd->ray_dir[Y] * spr.cr[X] - cd->ray_dir[X] * spr.cr[Y]);
+		//double transformY = invDet * (-planeY * spriteX + planeX * spriteY);
+		spr.transform[Y] = invert * (-cd->plane[Y] * spr.cr[X] + cd->plane[X] * spr.cr[Y]);
+		spr.screen[X] = (int)((vars->map->resolution_width >> 1)
+						* (1 + spr.transform[X] / spr.transform[Y]));
+		find_projection_size(vars, cd, &spr);
+		draw_sprite(vars, cd, &spr);
+
 	}
 }
 
-void			find_projection_size(t_vars *vars, t_ray *cords, t_spr *sprite)
+void			find_projection_size(t_vars *vars, t_ray *cords, t_spr *spr)
 {
 	int h;
 
 	h = vars->map->resolution_hight;
 
-	sprite->height = abs((int)(h / sprite->transform[Y]));
-	sprite->draw[Y][0] = -(sprite->height >> 1) + (h >> 1);
-	sprite->draw[Y][0] *= sprite->draw[Y][0] >= 0;
-	sprite->draw[Y][1] = (sprite->height >> 1) + (h >> 1);
-	if (sprite->draw[Y][1] >= h)
-		sprite->draw[Y][1] = h - 1;
-	sprite->width = sprite->height;//abs((int)(h / sprite->transform[Y]));
-	sprite->draw[X][0] = -(sprite->width >> 1) + sprite->screen[X];
-	sprite->draw[X][0] *= sprite->draw[X][0] >= 0;
-	sprite->draw[X][1] = (sprite->width >> 1) + sprite->screen[X];
-	if (sprite->draw[X][1] >= vars->map->resolution_width)
-		sprite->draw[X][1] = vars->map->resolution_width - 1;
+	spr->height = abs((int)(h / spr->transform[Y]));
+//	int drawStartY = -spriteHeight / 2 + h / 2;
+//	if(drawStartY < 0) drawStartY = 0;
+//	int drawEndY = spriteHeight / 2 + h / 2;
+//	if(drawEndY >= h) drawEndY = h - 1;
+	spr->draw[Y][0] = -(spr->height >> 1) + (h >> 1);
+	spr->draw[Y][0] *= spr->draw[Y][0] >= 0;
+	spr->draw[Y][1] = (spr->height >> 1) + (h >> 1);
+	if (spr->draw[Y][1] >= h)
+		spr->draw[Y][1] = h - 1;
+	spr->width = abs((int)(h / spr->transform[Y]));  //abs((int)(h / sprite->transform[Y]));
+	spr->draw[X][0] = -(spr->width >> 1) + spr->screen[X];
+	spr->draw[X][0] *= spr->draw[X][0] >= 0;
+	spr->draw[X][1] = (spr->width >> 1) + spr->screen[X];
+	if (spr->draw[X][1] >= vars->map->resolution_width)
+		spr->draw[X][1] = vars->map->resolution_width - 1;
 }
 
-void			draw_sprite(t_vars *vars, t_ray *cords, t_spr *sprite)
+void			draw_sprite(t_vars *vars, t_ray *cords, t_spr *spr)
 {
 	int tex[2];
 	int color;
 	int d;
 
-	while (sprite->draw[X][0] < sprite->draw[X][1])
+	while (spr->draw[X][0] < spr->draw[X][1])
 	{
 		tex[X] = (int)(256
-				* (sprite->draw[X][0]
-				- ((-sprite->width >> 1) + sprite->screen[X])
-				* vars->texs[S]->size[Y] / sprite->width) / 256);
-		if (sprite->transform[Y] > 0
-			&& sprite->draw[X][0] > 0
-			&& sprite->draw[X][0] < vars->map->resolution_width
-			&& sprite->transform[Y] < vars->map->zbuf[sprite->draw[X][0]])
+					   * (spr->draw[X][0]
+						  - ((-spr->width >> 1) + spr->screen[X])
+							* vars->texs[S]->size[Y] / spr->width) / 256);
+		if (spr->transform[Y] > 0
+			&& spr->draw[X][0] > 0
+			&& spr->draw[X][0] < vars->map->resolution_width
+			&& spr->transform[Y] < vars->map->zbuf[spr->draw[X][0]])
 		{
-			while (sprite->draw[Y][0] < sprite->draw[Y][1])
+			while (spr->draw[Y][0] < spr->draw[Y][1])
 			{
-				d = sprite->draw[Y][0] * 256 - vars->map->resolution_hight
-						* 128 + sprite->height * 128;
-				tex[Y] = ((d * vars->texs[S]->size[Y]) / sprite->height) / 256;
-				color =
-				sprite->draw[Y][0]++;
+				d = spr->draw[Y][0] * 256 - vars->map->resolution_hight
+											* 128 + spr->height * 128;
+				tex[Y] = ((d * vars->texs[S]->size[Y]) / spr->height) / 256;
+				// if((color & 0x00FFFFFF) != 0) buffer[y][stripe] = color; //paint pixel if it isn't black, black is the invisible color
+				color = *(int*)(vars->texs[S]->addr
+						+ vars->texs[S]->line_length * tex[Y] + tex[X]);
+				if ((color & 0x00FFFFFF) != 0)
+					pixel_put(vars, spr->draw[X][0], spr->draw[Y][0], color);
+				spr->draw[Y][0]++;
 			}
-
 		}
-
-
-
-		sprite->draw[X][0]++;
+		spr->draw[X][0]++;
 	}
-}
-//loop through every vertical stripe of the sprite on screen
-for(int stripe = drawStartX; stripe < drawEndX; stripe++)
-{
-//the conditions in the if are:
-//1) it's in front of camera plane so you don't see things behind you
-//2) it's on the screen (left)
-//3) it's on the screen (right)
-//4) ZBuffer, with perpendicular distance
-if(transformY > 0 && stripe > 0 && stripe < w && transformY < ZBuffer[stripe])
-for(int y = drawStartY; y < drawEndY; y++) //for every pixel of the current stripe
-{
-int d = (y) * 256 - h * 128 + spriteHeight * 128; //256 and 128 factors to avoid floats
-int texY = ((d * texHeight) / spriteHeight) / 256;
-Uint32 color = texture[sprite[spriteOrder[i]].texture][texWidth * texY + texX]; //get current color from the texture
-if((color & 0x00FFFFFF) != 0) buffer[y][stripe] = color; //paint pixel if it isn't black, black is the invisible color
 }
 
 int				circle_combine_cords_gen(double *cords, double x, double y)

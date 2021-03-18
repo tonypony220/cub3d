@@ -55,7 +55,7 @@ typedef struct  s_sprite
 
 typedef struct  s_spr
 {
-	double		relative_cord[2];
+	double		cr[2];
 	double		transform[2];
 	int			screen[2];
 	int 		height;
@@ -104,6 +104,7 @@ typedef struct  s_vars
 	int 		*textures[5];
 	t_data		*texs[5];
 	int			move;
+	char		exit;
 	double		player[5];
 }               t_vars;
 
@@ -145,9 +146,13 @@ int				load_textures(t_vars *vars);
 int 			generate_texture(t_vars *vars, char i);
 int				cub_exit(t_vars *vars, int exit_code);
 void			find_x_texture_cord(t_ray *crds, t_vars *vars);
+
 void			find_distanse_to_sprites(t_vars *vars);
 void			selection_sorting_sprite(double arr_val[], int arr_pos[],
 											int n);
+void			project_sprites(t_vars *vars, t_ray *cd);
+void			find_projection_size(t_vars *vars, t_ray *cords, t_spr *spr);
+void			draw_sprite(t_vars *vars, t_ray *cords, t_spr *spr);
 
 #define  keyPress         2
 #define  keyRelease       3
