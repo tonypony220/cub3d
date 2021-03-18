@@ -258,7 +258,8 @@ t_map		*map_parser(char *filename)
 	if (!(map = ft_calloc(1, sizeof(t_map))))
 		return (0);
 	ft_memset(var, 0, sizeof(var));
-	map_size_parser(filename, map, var);
+	if (map_size_parser(filename, map, var) < 0)
+		return (0);
 	//printf("number line from: %d\n width: %d hight: %d",
 	//	var[NUMBER_LINE_MAP_FROM], map->width, map->hight);
 	if (!(map->map = ft_calloc(1, sizeof(char) * map->width * map->hight + 1))

@@ -14,16 +14,17 @@ int			valid_player_position(t_vars *vars, double cord_x, double cord_y)
 	int x;
 	int y;
 	char val;
+
 	x = 0;
 	y = (int)vars->player[SIZE];
 	while (x <= y)
 	{
 		while (circle_combine_cords_gen(cords, x, y))
 		{
-			val = *(vars->map->map + (int)cords[X] + (int)cord_x
-					+ ((int)cords[Y]
-					+ (int)cord_y) * vars->map->width);
-			if (!ft_strchr("0N", val))
+			val = *(vars->map->map
+					+ (int)cords[X] + (int)cord_x
+					+ (((int)cords[Y] + (int)cord_y) * vars->map->width));
+			if (!ft_strchr("0N2", val))
 				return (0);
 		}
 		x++;
@@ -150,7 +151,7 @@ int     render_next_frame(t_vars *vars)
 {
 	t_data  img = *(*vars).data;
 	if (vars->exit)
-		cub_exit(vars, 0);
+		exit(cub_exit(vars, 0));
 	fill_half_screen(vars, 0, vars->map->ceiling_color);
 	fill_half_screen(vars, 1, vars->map->floor_color);
 //	rotate_camera(vars);
@@ -180,8 +181,10 @@ int     render_next_frame(t_vars *vars)
 int	create_img_of_screen(t_vars *vars)
 {
 	printf("IMG\n");
-	vars->data->img = NULL;
-	vars->data->addr = NULL;
+	//vars->data->img = NULL;
+	//vars->data->addr = NULL;
+	if (!(vars->data = ft_calloc(sizeof(t_data), 1)))
+		return (0);
 	if (!(vars->data->img = mlx_new_image(vars->mlx,
 									   		vars->map->resolution_width,
 									   		vars->map->resolution_hight)))
@@ -215,7 +218,7 @@ int     		main(int argc, char **argv)
 //	vars.mlx = NULL;
 //	vars.win = NULL;
 	ft_memset(&vars, 0, sizeof(vars));
-	vars.data = &img;
+//	vars.data = &img;
 	if (!(vars.map = map_parser(argv[1]))
 	 || !(vars.mlx = mlx_init())
 	 || !(create_img_of_screen(&vars))

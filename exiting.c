@@ -41,11 +41,19 @@ int 		cub_exit(t_vars *vars, int exit_code)
 {
 	if (vars->map)
 		free_map(vars->map);
-	free_texs(vars);
-	if (vars->data->img)
+	printf("map free\n");
+	if (vars->texs)
+		free_texs(vars);
+	printf("texs free\n");
+	if (vars->data)
+	{
 		mlx_destroy_image(vars->mlx, vars->data->img);
-	if (vars->data->buffer)
-		free(vars->data->buffer);
+		if (vars->data->buffer)
+			free(vars->data->buffer);
+		printf("buff free\n");
+		free(vars->data);
+	}
+	printf("img free\n");
 	if (vars->win)
 		mlx_destroy_window(vars->mlx, vars->win);
 	///if (vars->mlx) ???
