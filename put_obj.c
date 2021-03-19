@@ -453,7 +453,7 @@ void			draw_sprite(t_vars *vars, t_ray *cords, t_spr *spr)
 	//printf("counter(%ld)  \n", counter[0]++);
 }
 
-int				circle_combine_cords_gen(double *cords, double x, double y)
+int				circle_combine_cords_gen(int *cords, int x, int y)
 {
 	static int	call_number;
 

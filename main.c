@@ -1,43 +1,26 @@
 #include "cub3d.h"
 
-int             key_hook(int keycode)
+int             release_hook(int keycode)
 {
 	//printf("released key: %d\n", keycode);
 	return (keycode);
 }
 
-int			valid_player_position(t_vars *vars, double cord_x, double cord_y)
+int			wall_crossed(t_vars *vars, double x, double y)
 {
+	char 	val;
 
-	double 	cords[2];
-
-	int x;
-	int y;
-	char val;
-
-	x = 0;
-	y = (int)vars->player[SIZE];
-	while (x <= y)
-	{
-		while (circle_combine_cords_gen(cords, x, y))
-		{
-			val = *(vars->map->map
-					+ (int)cords[X] + (int)cord_x
-					+ (((int)cords[Y] + (int)cord_y) * vars->map->width));
-			if (!ft_strchr("0N2", val))
-				return (0);
-		}
-		x++;
-		y = (int)sqrt(pow(vars->player[SIZE], 2) - pow(cords[X], 2));
-	}
-	return (1);
+	val = *(vars->map->map + (int)x + ((int)y * vars->map->width));
+	if (!ft_strchr("0N2", val))
+		return (1);
+	return (0);
 }
 
 double 	map_move_with_buttons(int button, int axis)
 {
 	double move_val;
 
-	move_val = 0.1 * RESIZE;
+	move_val = 1.0; //0.1 * RESIZE;
 
 	if (button == W_BUTTON && axis == Y)
 		return (move_val);
@@ -51,14 +34,35 @@ double 	map_move_with_buttons(int button, int axis)
 
 }
 
-int   exit_hook(int button, t_vars *vars)
+void move_player(t_vars *vars, int button)
+{
+	double move_val = 0.1; //RESIZE / 12;
+	double move[2];
+	move[X] = move_val // * RESIZE / 12
+			* map_move_with_buttons(button, Y) * sin(vars->player[RAD])
+			+ move_val
+			* map_move_with_buttons(button, X) * cos(vars->player[RAD]);
+	move[Y] = move_val // * RESIZE / 12
+			* map_move_with_buttons(button, Y) * cos(vars->player[RAD])
+			+ move_val
+			* map_move_with_buttons(button, X) * -sin(vars->player[RAD]);
+			vars->player[X] += move[X]
+					* !wall_crossed(vars,
+					 				vars->player[X] + move[X] * 2,
+					 				vars->player[Y]);
+			vars->player[Y] += move[Y]
+					* !wall_crossed(vars,
+					 				vars->player[X],
+					 				vars->player[Y] + move[Y] * 2);
+}
+
+int   press_hook(int button, t_vars *vars)
 {
 	static int counter;
 	static int pressed;
 	double move_val;
 	double x;
 	double y;
-	move_val = 1;//RESIZE / 12;
 
 //	if (pressed == button)
 //		counter++;
@@ -71,26 +75,10 @@ int   exit_hook(int button, t_vars *vars)
 		vars->player[RAD] += 0.05;
 	if (button == 123)
 		vars->player[RAD] -= 0.05;
+	if (map_move_with_buttons(button, X) || map_move_with_buttons(button, Y))
+		move_player(vars, button);
 
-	x = vars->player[X]
-			+ move_val// * RESIZE / 12
-			* map_move_with_buttons(button, Y) * sin(vars->player[RAD])
-			+ move_val
-			* map_move_with_buttons(button, X) * cos(vars->player[RAD]);
-	y = vars->player[Y]
-			+ move_val// * RESIZE / 12
-			* map_move_with_buttons(button, Y) * cos(vars->player[RAD])
-			+ move_val
-			* map_move_with_buttons(button, X) * -sin(vars->player[RAD]);
-
-	if (valid_player_position(vars, x, y))
-	{
-		//printf("valid move");
-		vars->player[X] = x;
-		vars->player[Y] = y;
-	}
-		//printf("bad move");
-	printf("Pressed: %d\n", button);
+	//printf("Pressed: %d\n", button);
 //	printf("player x[%g] y[%g] ", vars->player[X], vars->player[Y]);
 //	printf("player x[%d] y[%d]\n", (int)round(vars->player[X]),
 //		   (int)round(vars->player[Y]));
@@ -250,9 +238,9 @@ int     		main(int argc, char **argv)
 	//vars.data = &img;
 	printf("ERROR -> %s\n", strerror(errno));
 
-	mlx_hook(vars.win, keyPress, 0, exit_hook, &vars);
+	mlx_hook(vars.win, keyPress, 0, press_hook, &vars);
 	mlx_hook(vars.win, buttonPress, ButtonPressMask, mouse_hook, &vars);
-	mlx_hook(vars.win, keyRelease, 0, key_hook, &vars);
+	mlx_hook(vars.win, keyRelease, 0, release_hook, &vars);
 	mlx_loop_hook(vars.mlx, render_next_frame, &vars);
 
 	mlx_loop(vars.mlx);	//mlx_loop(mlx);
