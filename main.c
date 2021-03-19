@@ -1,9 +1,9 @@
 #include "cub3d.h"
 
-int             release_hook(int keycode)
+int             release_hook(int button, t_vars *vars)
 {
-	//printf("released key: %d\n", keycode);
-	return (keycode);
+	vars->btns[button] = 0;
+	return (button);
 }
 
 int			wall_crossed(t_vars *vars, double x, double y)
@@ -36,7 +36,7 @@ double 	map_move_with_buttons(int button, int axis)
 
 void move_player(t_vars *vars, int button)
 {
-	double move_val = 0.1; //RESIZE / 12;
+	double move_val = 0.08; //RESIZE / 12;
 	double move[2];
 	move[X] = move_val // * RESIZE / 12
 			* map_move_with_buttons(button, Y) * sin(vars->player[RAD])
@@ -56,32 +56,30 @@ void move_player(t_vars *vars, int button)
 					 				vars->player[Y] + move[Y] * 2);
 }
 
+void moving(t_vars *vars)
+{
+	if (vars->btns[LEFT_BUTTON])
+		vars->player[RAD] += 0.03;
+	if (vars->btns[RIGHT_BUTTON])
+		vars->player[RAD] -= 0.03;
+	if (vars->btns[W_BUTTON])
+		move_player(vars, W_BUTTON);
+	if (vars->btns[A_BUTTON])
+		move_player(vars, A_BUTTON);
+	if (vars->btns[S_BUTTON])
+		move_player(vars, S_BUTTON);
+	if (vars->btns[D_BUTTON])
+		move_player(vars, D_BUTTON);
+}
+
 int   press_hook(int button, t_vars *vars)
 {
 	static int counter;
 	static int pressed;
-	double move_val;
-	double x;
-	double y;
-
-//	if (pressed == button)
-//		counter++;
-//	else
-//		counter = 0;
-//	pressed = button;
-	if (button == 53)
+	if (button == ESC_BUTTON)
 		vars->exit = 1;
-	if (button == 124)
-		vars->player[RAD] += 0.05;
-	if (button == 123)
-		vars->player[RAD] -= 0.05;
-	if (map_move_with_buttons(button, X) || map_move_with_buttons(button, Y))
-		move_player(vars, button);
-
-	//printf("Pressed: %d\n", button);
-//	printf("player x[%g] y[%g] ", vars->player[X], vars->player[Y]);
-//	printf("player x[%d] y[%d]\n", (int)round(vars->player[X]),
-//		   (int)round(vars->player[Y]));
+	else
+		vars->btns[button] = 1;
 	return(button);
 }
 
@@ -140,6 +138,7 @@ int     render_next_frame(t_vars *vars)
 	t_data  img = *(*vars).data;
 	if (vars->exit)
 		exit(cub_exit(vars, 0));
+	moving(vars);
 	fill_half_screen(vars, 0, vars->map->ceiling_color);
 	fill_half_screen(vars, 1, vars->map->floor_color);
 //	rotate_camera(vars);
@@ -166,7 +165,7 @@ int     render_next_frame(t_vars *vars)
 	return (1);
 }
 
-int	create_img_of_screen(t_vars *vars)
+int	create_screen(t_vars *vars)
 {
 	printf("IMG\n");
 	//vars->data->img = NULL;
@@ -206,10 +205,11 @@ int     		main(int argc, char **argv)
 //	vars.mlx = NULL;
 //	vars.win = NULL;
 	ft_memset(&vars, 0, sizeof(vars));
+	//ft_memset(vars.btns, 0, sizeof(vars.btns));
 //	vars.data = &img;
 	if (!(vars.map = map_parser(argv[1]))
 	 || !(vars.mlx = mlx_init())
-	 || !(create_img_of_screen(&vars))
+	 || !(create_screen(&vars))
 	 || !(load_textures(&vars))
 	 || !(vars.win = mlx_new_window(vars.mlx,
 								   vars.map->resolution_width,

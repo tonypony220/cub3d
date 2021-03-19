@@ -12,3 +12,5 @@ m.c
 libftpics
 pics
 .DS_Store
+floor.c
+sprite.c

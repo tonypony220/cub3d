@@ -30,6 +30,9 @@
 #define A_BUTTON 0
 #define S_BUTTON 1
 #define D_BUTTON 2
+#define ESC_BUTTON 53
+#define LEFT_BUTTON 124
+#define RIGHT_BUTTON 123
 
 #define LEN_VAR_ARRAY 3
 #define NUMBER_LINE_MAP_FROM 0
@@ -106,6 +109,7 @@ typedef struct  s_vars
 	int			move;
 	char		exit;
 	double		player[5];
+	char		btns[256];
 }               t_vars;
 
 typedef struct  s_ray
@@ -137,7 +141,8 @@ void        	pixel_put(t_vars *vars, int x, int y, int color);
 void			fill_screen(t_vars *vars, int color);
 void			fill_half_screen(t_vars *vars, int which_half, int color);
 void			fill_square(t_map *map, int x, int y, char *new_map, int times);
-int				circle_combine_cords_gen(double *cords, double x, double y);
+
+int				circle_combine_cords_gen(int *cords, int x, int y);
 void			put_circle(t_data img, int radius,
 				    	   int cord_x, int cord_y,
 					   	   int color);
