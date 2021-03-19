@@ -15,6 +15,8 @@ void		free_map(t_map *map)
 		free(map->sprites_order);
 	if (map->zbuf)
 		free(map->zbuf);
+	if (map->visited)
+		free(map->visited);
 	if (map->map)
 		free(map->map);
 	free(map);

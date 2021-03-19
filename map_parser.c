@@ -31,26 +31,14 @@ int		map_size_parser(char *filename, t_map *map, int *data)
 	int fd;
 	char *line;
 
-	//ft_memset(data, 0, sizeof(data));
-	write(1, "size\n", 5);
-	res = 1;
 	fd = open(filename, O_RDONLY);
-	while (res > 0)
+	while ((res = get_next_line(fd, &line)) > 0)
 	{
-		res = get_next_line(fd, &line);
-		if (res < 0)
-		{
-			printf("ERROR >> %s\n", strerror(errno));
-			return (-1);
-			// TODO
-		}
-		if (res
-			&& !data[NUMBER_LINE_MAP_FROM]
+		if (res && !data[NUMBER_LINE_MAP_FROM]
 			&& only_symbols("\t 012N", line)
 			&& ft_strlen(line) > 2)
 				data[NUMBER_LINE_MAP_FROM] = data[COUNTER];
-		if (res
-			&& data[NUMBER_LINE_MAP_FROM]
+		if (res && data[NUMBER_LINE_MAP_FROM]
 			&& map->width < (data[CURRENT_LEN] = ft_strlen(line)))
 				map->width = data[CURRENT_LEN];
 		if (res && data[NUMBER_LINE_MAP_FROM])
@@ -58,6 +46,8 @@ int		map_size_parser(char *filename, t_map *map, int *data)
 		free(line);
 		data[COUNTER]++;
 	}
+	if (res < 0)
+		return (-1);
 	close(fd);
 	map->hight = data[COUNTER] - data[NUMBER_LINE_MAP_FROM];
 	return (data[NUMBER_LINE_MAP_FROM]);
@@ -143,6 +133,7 @@ void 	fill_map(t_map *map, char *line)
 		{
 			map->respawn[X] = i;
 			map->respawn[Y] = line_number;
+			map->respawns++;
 		}
 		else if (symbol_to_put == '2')
 		{
@@ -190,9 +181,8 @@ int		parse_map(char *filename, t_map *map, int *var)
 }
 
 
-int			validate_map(t_map *map)
+int			validate_map_params(t_map *map)
 {
-	/* rename to validating params of map */
 	int 	i;
 
 	i = -1;
@@ -219,7 +209,7 @@ int			validate_map(t_map *map)
 }
 
 
-void		print_map(t_map *map)
+void		print_map(t_map *map, int k) // k which map
 {
 	int j = -1;
 	int i;
@@ -227,7 +217,15 @@ void		print_map(t_map *map)
 	{
 		i = -1;
 		while (++i < map->width)
-			write(1, map->map + i + (map->width * j), 1);
+		{
+			if (k == 0)
+				write(1, map->map + i + (map->width * j), 1);
+			else
+				if (*(map->visited + i + (map->width * j)))
+					write(1, "1", 1);
+				else
+					write(1, " ", 1);
+		}
 		write(1, "\n", 1);
 	}
 }
@@ -241,13 +239,28 @@ int			check_map_parametrs(t_map *map)
 	if (!map->resolution_width || !map->resolution_hight)
 	{
 		if (BEHAVE_HARD)
-			return (1);
+			return (0);
 		map->resolution_width = SCREEN_WIDTH;
 		map->resolution_hight = SCREEN_HEIGHT;
 	}
 	printf("map %d %d\n", map->hight, map->width);
 	printf("resolution %d %d\n", map->resolution_hight, map->resolution_width);
-	return (0);
+	return (1);
+}
+
+int			validate_map(t_map *map)
+{
+	char mv[8];
+
+	combinate_all_moves(mv);
+	dfs(map, mv, map->respawn[X], map->respawn[Y]);
+	if (!validate_map_params(map)
+	|| !check_map_parametrs(map)
+	|| map->invalid)
+		return (0);
+	print_map(map, 1);
+	printf("map->invalid = %d", map->invalid);
+	return (1);
 }
 
 t_map		*map_parser(char *filename)
@@ -260,9 +273,8 @@ t_map		*map_parser(char *filename)
 	ft_memset(var, 0, sizeof(var));
 	if (map_size_parser(filename, map, var) < 0)
 		return (0);
-	//printf("number line from: %d\n width: %d hight: %d",
-	//	var[NUMBER_LINE_MAP_FROM], map->width, map->hight);
 	if (!(map->map = ft_calloc(1, sizeof(char) * map->width * map->hight + 1))
+	|| !(map->visited = ft_calloc(1, sizeof(char) * map->width * map->hight + 1))
 	|| !(map->sprites = ft_calloc(sizeof(t_sprite), map->sprite_counter))
 	|| !(map->sprites_order = ft_calloc(sizeof(int), map->sprite_counter))
 	|| !(map->sprites_dist = ft_calloc(sizeof(double), map->sprite_counter)))
@@ -270,8 +282,9 @@ t_map		*map_parser(char *filename)
 	var[CURRENT_LEN] = var[COUNTER];
 	parse_map(filename, map, var);
 	check_map_parametrs(map);
-	print_map(map);
-	if (!validate_map(map) || !(map->zbuf = ft_calloc(sizeof(double), map->resolution_width)))
+	print_map(map, 0);
+	if (!validate_map(map)
+	|| !(map->zbuf = ft_calloc(sizeof(double), map->resolution_width)))
 		return (0);  /* free wiil inside */
 	if (RESIZE > 1)
 		resize_map(map, RESIZE);

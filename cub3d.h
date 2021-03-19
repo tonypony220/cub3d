@@ -84,6 +84,9 @@ typedef struct  s_map
 	t_sprite	*sprites;
 	double		*zbuf;
 	char        *map;
+	char		*visited;
+	int			respawns;
+	char		invalid;
 }               t_map;
 
 typedef struct  s_data
@@ -158,6 +161,9 @@ void			selection_sorting_sprite(double arr_val[], int arr_pos[],
 void			project_sprites(t_vars *vars, t_ray *cd);
 void			find_projection_size(t_vars *vars, t_ray *cords, t_spr *spr);
 void			draw_sprite(t_vars *vars, t_ray *cords, t_spr *spr);
+
+void 			combinate_all_moves(char *move);
+void			dfs(t_map *map, char *mv, int x, int y);
 
 #define  keyPress         2
 #define  keyRelease       3
