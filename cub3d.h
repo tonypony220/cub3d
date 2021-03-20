@@ -11,6 +11,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <fcntl.h>
 
 #define SCREEN_WIDTH 1024
 #define SCREEN_HEIGHT 680
@@ -111,6 +112,7 @@ typedef struct  s_vars
 	t_data		*texs[5];
 	int			move;
 	char		exit;
+	char		save;
 	double		player[5];
 	char		btns[256];
 }               t_vars;
@@ -163,7 +165,10 @@ void			find_projection_size(t_vars *vars, t_ray *cords, t_spr *spr);
 void			draw_sprite(t_vars *vars, t_ray *cords, t_spr *spr);
 
 void 			combinate_all_moves(char *move);
+
 void			dfs(t_map *map, char *mv, int x, int y);
+
+void			create_bmp_file(char *img, char *file, int w, int h, int bpp);
 
 #define  keyPress         2
 #define  keyRelease       3

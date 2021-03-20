@@ -59,9 +59,9 @@ void move_player(t_vars *vars, int button)
 void moving(t_vars *vars)
 {
 	if (vars->btns[LEFT_BUTTON])
-		vars->player[RAD] += 0.03;
+		vars->player[RAD] += 0.04;
 	if (vars->btns[RIGHT_BUTTON])
-		vars->player[RAD] -= 0.03;
+		vars->player[RAD] -= 0.04;
 	if (vars->btns[W_BUTTON])
 		move_player(vars, W_BUTTON);
 	if (vars->btns[A_BUTTON])
@@ -145,21 +145,20 @@ int     render_next_frame(t_vars *vars)
 	//if (RESIZE < 30)
 	//	put_map(vars);
 	put_player(vars);
-	put_tex(vars); //del
+	//put_tex(vars); //del
 	mlx_string_put(vars->mlx, vars->win, vars->map->resolution_width /2 , 20, 0xFFFFFF,
 						  "HOBA!");
-
-	//while (radius >= 0)
-	//{
-	//	put_circle(img, radius,
-	//		 vars->player[X], vars->player[Y], (int)
-	//		0x00FF0000 | vars->move << 8);
-	//	//put_circle(img, radius, 400, 400, 0xFF00FF00);
-	//	radius -= 2;
-	//}
+	if (vars->save)
+	{
+		printf("BMP CREate");
+		create_bmp_file(vars->data->addr, "scr_shot.bmp",
+						vars->map->resolution_width,
+						vars->map->resolution_hight,
+						vars->data->bits_per_pixel);
+		exit(cub_exit(vars, 0));
+	}
 	//mlx_clear_window(vars->mlx, vars->win);
 	vars->move++;
-	//vars->move *= vars->move < 8;
 	vars->move *= (vars->move < ((1 << 31) + 1) * -1);
 	mlx_put_image_to_window(vars->mlx, vars->win, img.img, 0, 0);
 	return (1);
@@ -184,6 +183,7 @@ int	create_screen(t_vars *vars)
 	if (!(vars->data->buffer = ft_calloc(sizeof(int)
 			* vars->map->resolution_hight * vars->map->resolution_width, 1)))
 		return (0);
+	printf("%d DATA %dline len ", vars->data->bits_per_pixel, vars->data->line_length);
 	return (1);
 }
 
@@ -195,16 +195,24 @@ int     		main(int argc, char **argv)
 	t_vars 		vars;
 
 	vars.exit = 0;
-	printf("args: %s %s\n", argv[0], argv[1]);
+	printf("args: %s %s %s\n", argv[0], argv[1], argv[2]);
 
 	if (argc < 2)
 	{
 		write(1, "No input\n", 9);
 		return (1);
 	}
+	ft_memset(&vars, 0, sizeof(vars));
+	if (argc == 3)
+	{
+		printf("SUKA\n");
+		if (!ft_strncmp("--save", argv[2], 6))
+			vars.save = 1;
+		else
+			exit(cub_exit(&vars, 1));
+	}
 //	vars.mlx = NULL;
 //	vars.win = NULL;
-	ft_memset(&vars, 0, sizeof(vars));
 	//ft_memset(vars.btns, 0, sizeof(vars.btns));
 //	vars.data = &img;
 	if (!(vars.map = map_parser(argv[1]))
@@ -231,8 +239,8 @@ int     		main(int argc, char **argv)
 	vars.move = 0;
 	vars.player[SIZE] = RESIZE / 6;
 	vars.player[ROTATE] = 0;
-	vars.player[X] = (double)vars.map->respawn[X];
-	vars.player[Y] = (double)vars.map->respawn[Y];
+	vars.player[X] = vars.map->respawn[X] + 0.5;
+	vars.player[Y] = vars.map->respawn[Y] + 0.5;
 	//vars.mlx = mlx;
 	//vars.win = win;
 	//vars.data = &img;
