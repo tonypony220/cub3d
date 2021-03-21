@@ -20,7 +20,7 @@ double 	map_move_with_buttons(int button, int axis)
 {
 	double move_val;
 
-	move_val = 1.0; //0.1 * RESIZE;
+	move_val = 1.0;
 
 	if (button == W_BUTTON && axis == Y)
 		return (move_val);
@@ -76,6 +76,7 @@ int   press_hook(int button, t_vars *vars)
 {
 	static int counter;
 	static int pressed;
+
 	if (button == ESC_BUTTON)
 		vars->exit = 1;
 	else
@@ -141,16 +142,9 @@ int     render_next_frame(t_vars *vars)
 	moving(vars);
 	fill_half_screen(vars, 0, vars->map->ceiling_color);
 	fill_half_screen(vars, 1, vars->map->floor_color);
-//	rotate_camera(vars);
-	//if (RESIZE < 30)
-	//	put_map(vars);
 	put_player(vars);
-	//put_tex(vars); //del
-	mlx_string_put(vars->mlx, vars->win, vars->map->resolution_width /2 , 20, 0xFFFFFF,
-						  "HOBA!");
 	if (vars->save)
 	{
-		printf("BMP CREate");
 		create_bmp_file(vars->data->addr, "scr_shot.bmp",
 						vars->map->resolution_width,
 						vars->map->resolution_hight,
@@ -189,9 +183,6 @@ int	create_screen(t_vars *vars)
 
 int     		main(int argc, char **argv)
 {
-	//void    	*mlx;
-	//void		*win;
-	t_data  	img;
 	t_vars 		vars;
 
 	vars.exit = 0;
@@ -205,12 +196,12 @@ int     		main(int argc, char **argv)
 	ft_memset(&vars, 0, sizeof(vars));
 	if (argc == 3)
 	{
-		printf("SUKA\n");
 		if (!ft_strncmp("--save", argv[2], 6))
 			vars.save = 1;
 		else
 			exit(cub_exit(&vars, 1));
 	}
+	printf("%p TEXS %p DATA vars %p\n", vars.texs, vars.data, &vars);
 //	vars.mlx = NULL;
 //	vars.win = NULL;
 	//ft_memset(vars.btns, 0, sizeof(vars.btns));
@@ -232,7 +223,8 @@ int     		main(int argc, char **argv)
 	//					 vars.map->resolution_width,
 	//					 vars.map->resolution_hight, "Hoba!");
 
-	printf("vars.data-> %p, %p\n", vars.data->img, vars.data->addr);
+	//printf("vars.data-> %p, %p\n", vars.data->img, vars.data->addr);
+	printf("START\n");
 
 //	printf("bits per pix = %d, line_lenght = %d\n",
 //		img.bits_per_pixel, img.line_length);
@@ -244,7 +236,7 @@ int     		main(int argc, char **argv)
 	//vars.mlx = mlx;
 	//vars.win = win;
 	//vars.data = &img;
-	printf("ERROR -> %s\n", strerror(errno));
+	//printf("ERROR -> %s\n", strerror(errno));
 
 	mlx_hook(vars.win, keyPress, 0, press_hook, &vars);
 	mlx_hook(vars.win, buttonPress, ButtonPressMask, mouse_hook, &vars);

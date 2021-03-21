@@ -11,7 +11,6 @@ int generate_texture(t_vars *vars, char tex_num)
 	 || !(vars->texs[tex_num]->addr = (char *)ft_calloc(
 			sizeof(int) * TEX_HEGHT * TEX_WIDTH, 1)))
 		return (0);
-	//printf("tex width = %d tex_height = %d\n", TEX_WIDTH, TEX_HEGHT);
 	vars->texs[tex_num]->bits_per_pixel = 32;
 	vars->texs[tex_num]->line_length = TEX_WIDTH
 			* vars->texs[tex_num]->bits_per_pixel;
@@ -22,13 +21,10 @@ int generate_texture(t_vars *vars, char tex_num)
 		x = -1;
 		while (++x < TEX_WIDTH)
 		{
-			/* */
-			//int xycolor = y * 128 / TEX_HEGHT + x * 128 / TEX_WIDTH;
 			xorcolor = (x * 256 / TEX_WIDTH) ^ (y * 256 / TEX_HEGHT);
 			*(int*)(vars->texs[tex_num]->addr
 			+ vars->texs[tex_num]->line_length * y + x * 4)
 				= xorcolor + 256 * xorcolor + 65536 * xorcolor;
-		//	*(vars->textures[i] + TEX_WIDTH * y + x) = 256 * xorcolor;
 
 
 		}
@@ -73,7 +69,8 @@ int load_texture(t_vars *vars, char tex_num)
 	int fd = open(vars->map->texture_path[tex_num], O_RDONLY);
 	//printf("w %d\n", w);
 
-	if (ft_strnstr(vars->map->texture_path[tex_num], ".png", 100))
+	if (ft_strnstr(vars->map->texture_path[tex_num], ".png",
+				ft_strlen(vars->map->texture_path[tex_num])))
 		vars->texs[tex_num]->img = mlx_png_file_to_image(
 				vars->mlx, vars->map->texture_path[tex_num], &w, &h);
 	else

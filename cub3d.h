@@ -1,7 +1,7 @@
 #ifndef CUB3D_H
 # define CUB3D_H
 
-#define BEHAVE_HARD 0
+#define BEHAVE_HARD 1
 
 #include "mlx/mlx.h"
 #include "libft/libft.h"
@@ -108,7 +108,6 @@ typedef struct  s_vars
 	void        *mlx;
 	void        *win;
 	t_data		*data;
-	int 		*textures[5];
 	t_data		*texs[5];
 	int			move;
 	char		exit;
@@ -143,14 +142,8 @@ t_map			*map_parser(char *filename);
 int				logn(long n, unsigned long base, int unsig, int islong);
 int				create_trgb(int t, int r, int g, int b);
 void        	pixel_put(t_vars *vars, int x, int y, int color);
-void			fill_screen(t_vars *vars, int color);
 void			fill_half_screen(t_vars *vars, int which_half, int color);
-void			fill_square(t_map *map, int x, int y, char *new_map, int times);
 
-int				circle_combine_cords_gen(int *cords, int x, int y);
-void			put_circle(t_data img, int radius,
-				    	   int cord_x, int cord_y,
-					   	   int color);
 int 			load_texture(t_vars *vars, char num);
 int				load_textures(t_vars *vars);
 int 			generate_texture(t_vars *vars, char i);
@@ -169,6 +162,19 @@ void 			combinate_all_moves(char *move);
 void			dfs(t_map *map, char *mv, int x, int y);
 
 void			create_bmp_file(char *img, char *file, int w, int h, int bpp);
+
+int				free_map(t_map *map);
+
+int				strchrs(char *str, char c);
+int				only_symbols(char *symbols, char *line);
+void			find_ray_dir_and_initial_len(t_vars *vars, t_ray *cords);
+void 			cast_ray(t_vars *vars, t_ray *cords);
+void			init_player_screen(t_vars *vars, t_ray *cords);
+void			init_ray(t_vars *vars, t_ray *cords, int x);
+void			calculate_perp_dist(t_vars *vars, t_ray *cords);
+int				get_pole_by_ray_dir(t_ray *cords);
+void			put_textured_line(t_vars *vars, int line_len,
+								  t_ray *cords, int x);
 
 #define  keyPress         2
 #define  keyRelease       3

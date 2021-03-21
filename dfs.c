@@ -7,14 +7,14 @@ void 		combinate_all_moves(char *move)
 
 	i = -1;
 	j = 0;
-	printf("MOVE\n");
+	//printf("MOVE\n");
 	while (++i < 8)
 	{
 		move[i] = j % 2 - 2 * ((j & 3) == 3 && 1);
-		printf(" %2d", move[i]);
+	//	printf(" %2d", move[i]);
 		if (i == 3)
 		{
-			printf("\n");
+	//		printf("\n");
 			continue;
 		}
 		j++;
@@ -30,7 +30,7 @@ void dfs(t_map *map, char *mv, int x, int y)
 
 	if (map->invalid)
 		return ;
-	printf("(%d,%d) ", x, y);
+	//printf("(%d,%d) ", x, y);
 	*(map->visited + x + y * map->width) = 1;
 	if (x == 0 || x == (map->width - 1) || y == 0 || y == (map->hight - 1))
 		map->invalid++;

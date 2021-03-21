@@ -1,30 +1,5 @@
 #include "cub3d.h"
 
-int		only_symbols(char *symbols, char *line)
-{
-	while (*line)
-	{
-		if (!ft_strchr(symbols, *line++))
-			return (0);
-	}
-	return (1);
-}
-
-int		strchrs(char *str, char c)
-/*count number of chars in string */
-{
-	int counter;
-
-	counter = 0;
-	while (*str)
-	{
-		if (*str == c)
-			counter++;
-		str++;
-	}
-	return (counter);
-}
-
 int		map_size_parser(char *filename, t_map *map, int *data)
 {
 	int res;
@@ -46,6 +21,7 @@ int		map_size_parser(char *filename, t_map *map, int *data)
 		free(line);
 		data[COUNTER]++;
 	}
+	free(line);
 	if (res < 0)
 		return (-1);
 	close(fd);
@@ -65,6 +41,8 @@ int		parse_color(char* line, int i, t_map *map)
 		while(!(*line <= '9' && *line >= '0') && *line)
 			line++;
 		color[k] = ft_atoi(line);
+		if ((unsigned int) color[k] > 255)
+			map->invalid = 1;
 		while((*line <= '9' && *line >= '0') && *line)
 			line++;
 	}
@@ -194,13 +172,13 @@ int			validate_map_params(t_map *map)
 				return (0);
 			continue;
 		}
-		printf("path tex %d -> %s\n", i, map->texture_path[i]);
+		//printf("path tex %d -> %s\n", i, map->texture_path[i]);
 		if (!(map->path_provided & (1 << i)) && BEHAVE_HARD)
 			return (0);
 		if (map->path_provided & (1 << i) && !map->texture_path[i])
 		{
 			if (BEHAVE_HARD)
-				return (1);
+				return (0);
 			map->path_provided &= (0 << i);
 		}
 	}
@@ -208,35 +186,35 @@ int			validate_map_params(t_map *map)
 	return (1);
 }
 
-
-void		print_map(t_map *map, int k) // k which map
-{
-	int j = -1;
-	int i;
-	while (++j < map->hight)
-	{
-		i = -1;
-		while (++i < map->width)
-		{
-			if (k == 0)
-				write(1, map->map + i + (map->width * j), 1);
-			else
-				if (*(map->visited + i + (map->width * j)))
-					write(1, "1", 1);
-				else
-					write(1, " ", 1);
-		}
-		write(1, "\n", 1);
-	}
-}
+/// delete
+///void		print_map(t_map *map, int k) // k which map
+///{
+///	int j = -1;
+///	int i;
+///	while (++j < map->hight)
+///	{
+///		i = -1;
+///		while (++i < map->width)
+///		{
+///			if (k == 0)
+///				write(1, map->map + i + (map->width * j), 1);
+///			else
+///				if (*(map->visited + i + (map->width * j)))
+///					write(1, "1", 1);
+///				else
+///					write(1, " ", 1);
+///		}
+///		write(1, "\n", 1);
+///	}
+///}
 
 int			check_map_parametrs(t_map *map)
 {
 	printf("ceiling clr = %X\n", map->ceiling_color);
 	printf("floor clr = %X\n", map->floor_color);
-	printf("resolution %d %d\n", map->resolution_hight, map->resolution_width);
+	printf("before resolution %d %d\n", map->resolution_hight, map->resolution_width);
 
-	if (!map->resolution_width || !map->resolution_hight)
+	if (map->resolution_width < 1 || map->resolution_hight < 1)
 	{
 		if (BEHAVE_HARD)
 			return (0);
@@ -252,13 +230,15 @@ int			validate_map(t_map *map)
 {
 	char mv[8];
 
+	if (map->respawns != 1)
+		return (0);
 	combinate_all_moves(mv);
 	dfs(map, mv, map->respawn[X], map->respawn[Y]);
 	if (!validate_map_params(map)
 	|| !check_map_parametrs(map)
 	|| map->invalid)
 		return (0);
-	print_map(map, 1);
+//	print_map(map, 1);
 	printf("map->invalid = %d", map->invalid);
 	return (1);
 }
@@ -278,16 +258,15 @@ t_map		*map_parser(char *filename)
 	|| !(map->sprites = ft_calloc(sizeof(t_sprite), map->sprite_counter))
 	|| !(map->sprites_order = ft_calloc(sizeof(int), map->sprite_counter))
 	|| !(map->sprites_dist = ft_calloc(sizeof(double), map->sprite_counter)))
-		return (0);
+		return (free_map(map));
 	var[CURRENT_LEN] = var[COUNTER];
 	parse_map(filename, map, var);
-	check_map_parametrs(map);
 	print_map(map, 0);
 	if (!validate_map(map)
 	|| !(map->zbuf = ft_calloc(sizeof(double), map->resolution_width)))
-		return (0);  /* free wiil inside */
+		return (free_map(map));  /* free wiil inside */
 	if (RESIZE > 1)
 		resize_map(map, RESIZE);
-	write(1, "parser\n", 7);
+	write(1, "\t\t\tPARSER\n", 10);
 	return (map);
 }

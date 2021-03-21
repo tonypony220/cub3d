@@ -1,12 +1,24 @@
 #include "cub3d.h"
 
-void		free_map(t_map *map)
+int			free_map(t_map *map)
 {
 	int 	i;
 
 	i = -1;
 	while (++i < NUM_MAP_PATHS && map->texture_path[i])
+	{
+		printf("freeing %s path\n", map->texture_path[i]);
 		free(map->texture_path[i]);
+		map->texture_path[i] = 0;
+		printf("%p -> path\n", map->texture_path[i]);
+	}
+	printf("addr %p\n", map->sprites);
+	printf("addr %p\n", map->sprites_dist);
+	printf("addr %p\n", map->sprites_order);
+	printf("addr %p\n", map->zbuf);
+	printf("addr %p\n", map->visited);
+	printf("addr %p\n", map->map);
+
 	if (map->sprites)
 		free(map->sprites);
 	if (map->sprites_dist)
@@ -19,7 +31,15 @@ void		free_map(t_map *map)
 		free(map->visited);
 	if (map->map)
 		free(map->map);
+	ft_memset(map, 0, sizeof(t_map));
+	printf("addr %p\n", map->sprites);
+	printf("addr %p\n", map->sprites_dist);
+	printf("addr %p\n", map->sprites_order);
+	printf("addr %p\n", map->zbuf);
+	printf("addr %p\n", map->visited);
+	printf("addr %p\n", map->map);
 	free(map);
+	return (0);
 }
 
 void		free_texs(t_vars *vars)
@@ -35,6 +55,7 @@ void		free_texs(t_vars *vars)
 		{
 			free(vars->texs[tex_num]->addr);
 			free(vars->texs[tex_num]);
+			printf("%d tex freed \n", tex_num);
 		}
 	}
 }
@@ -44,8 +65,7 @@ int 		cub_exit(t_vars *vars, int exit_code)
 	if (vars->map)
 		free_map(vars->map);
 	printf("map free\n");
-	if (vars->texs)
-		free_texs(vars);
+	free_texs(vars);
 	printf("texs free\n");
 	if (vars->data)
 	{
@@ -59,11 +79,14 @@ int 		cub_exit(t_vars *vars, int exit_code)
 	if (vars->win)
 		mlx_destroy_window(vars->mlx, vars->win);
 	///if (vars->mlx) ???
-
+	printf("mlx %p\n", vars->mlx);
+	if (vars->mlx)
+		//free(vars->mlx);
 	if (exit_code)
 	{
 		printf("ERROR\n");
 		printf("errno: '%s'\n", strerror(errno));
 	}
+	system("leaks run");
 	return (exit_code);
 }
