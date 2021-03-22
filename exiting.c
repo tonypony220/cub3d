@@ -61,6 +61,17 @@ void		free_texs(t_vars *vars)
 		}
 	}
 }
+//typedef struct		mlx_ptr_s
+//{
+//	void			*appid;
+//	mlx_win_list_t	*win_list;
+//	mlx_img_list_t	*img_list;
+//	void			(*loop_hook)(void *);
+//	void			*loop_hook_data;
+//	void			*loop_timer;
+//	mlx_img_list_t	*font;
+//	int			main_loop_active;
+//} mlx_ptr_t;
 
 int 		cub_exit(t_vars *vars, int exit_code)
 {
@@ -86,11 +97,9 @@ int 		cub_exit(t_vars *vars, int exit_code)
 		free(vars->mlx);
 	if (exit_code)
 	{
-		printf(RED);
-		printf("ERROR\n");
-		printf("errno: '%s'\n", strerror(errno));
-		printf(RESET);
+		printf("%s ERROR %s\n", RED, RESET);
+		printf("%s errno: '%s' %s\n", RED,  strerror(errno), RESET);
 	}
-	system("leaks run");
+	system("leaks --fullStacks run");
 	return (exit_code);
 }

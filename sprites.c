@@ -47,14 +47,14 @@ void			find_projection_size(t_vars *vars, t_ray *cords, t_spr *spr)
 {
 	int h;
 
-	h = (double)vars->map->resolution_hight;
+	h = vars->map->resolution_hight;
 	spr->height = abs((int)(h / spr->transform[Y] * (double)vars->win_k));
 	spr->draw[Y][0] = -(spr->height >> 1) + (h >> 1);
 	spr->draw[Y][0] *= spr->draw[Y][0] >= 0;
 	spr->draw[Y][1] = (spr->height >> 1) + (h >> 1);
 	if (spr->draw[Y][1] >= h)
 		spr->draw[Y][1] = h - 1;
-	spr->width = abs((int)(h / spr->transform[Y]) * (double)vars->win_k);
+	spr->width = abs((int)(h / spr->transform[Y] * (double)vars->win_k));
 	spr->draw[X][0] = -(spr->width >> 1) + spr->screen[X];
 	spr->draw[X][0] *= spr->draw[X][0] >= 0;
 	spr->draw[X][1] = (spr->width >> 1) + spr->screen[X];

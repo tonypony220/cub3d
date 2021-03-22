@@ -15,14 +15,10 @@ int   press_hook(int button, t_vars *vars)
 	return(button);
 }
 
-int   mouse_hook(int button, int x,int y, void *vars)
+int   mouse_hook(t_vars *vars)
 {
-	t_vars *var = (t_vars*)vars;
-	var->move = x;
-//	mlx_loop_hook(var->mlx, render_next_frame, &vars);
-	printf("Pressed: %d, x: %d y: %d\n", button, x, y);
-//	(void*)param;
-	return(button);
+	vars->exit = 1;
+	return(1);
 }
 
 
@@ -72,6 +68,7 @@ int     render_next_frame(t_vars *vars)
 	moving(vars);
 	fill_half_screen(vars, 0, vars->map->ceiling_color);
 	fill_half_screen(vars, 1, vars->map->floor_color);
+	printf("%s RENDERING %s\n", GREEN, RESET);
 	put_player(vars);
 	if (vars->save)
 	{
@@ -92,7 +89,7 @@ int	create_screen(t_vars *vars)
 	int w;
 	int h;
 
-	mlx_get_screen_size(vars->mlx, &w, &h);
+	mlx_get_screen_size( &w, &h);
 	if (vars->map->resolution_hight > h)
 		vars->map->resolution_hight = h;
 	if (vars->map->resolution_width > w)
@@ -125,62 +122,32 @@ int     		main(int argc, char **argv)
 	vars.exit = 0;
 	printf("args: %s %s %s\n", argv[0], argv[1], argv[2]);
 
-	if (argc < 2)
-	{
-		write(1, "No input\n", 9);
-		return (1);
-	}
 	ft_memset(&vars, 0, sizeof(vars));
-	if (argc == 3)
-	{
-		if (!ft_strncmp("--save", argv[2], 6))
-			vars.save = 1;
-		else
-			exit(cub_exit(&vars, 1));
-	}
-	printf("%p TEXS %p DATA vars %p\n", vars.texs, vars.data, &vars);
-//	vars.mlx = NULL;
-//	vars.win = NULL;
-	//ft_memset(vars.btns, 0, sizeof(vars.btns));
-//	vars.data = &img;
+	if (!(argc == 2 || argc == 3)
+	|| !ft_strnstr(argv[1], ".cub", ft_strlen(argv[1]))
+	|| (argc == 3 && (vars.save = 1) && ft_strncmp("--save", argv[2], 6)))
+		exit(cub_exit(&vars, 1));
 	if (!(vars.map = map_parser(argv[1]))
 	 || !(vars.mlx = mlx_init())
 	 || !(create_screen(&vars))
 	 || !(load_textures(&vars))
-	 || !(vars.win = mlx_new_window(vars.mlx,
+	 || (vars.save == 0 && !(vars.win = mlx_new_window(vars.mlx,
 								   vars.map->resolution_width,
-								   vars.map->resolution_hight, "Hoba!")))
+								   vars.map->resolution_hight, "Hoba!"))))
 		return (cub_exit(&vars, 1));
-
-	//vars.mlx = mlx;
-//	if (load_texture(&vars, 0))
-//		return (1);
-	//printf("path NO %s\n", vars.map->texture_path[NO]);
-	//vars.win = mlx_new_window(vars.mlx,
-	//					 vars.map->resolution_width,
-	//					 vars.map->resolution_hight, "Hoba!");
-
-	//printf("vars.data-> %p, %p\n", vars.data->img, vars.data->addr);
-	printf("START\n");
-
-//	printf("bits per pix = %d, line_lenght = %d\n",
-//		img.bits_per_pixel, img.line_length);
+	printf("%s START %s\n", GREEN, RESET);
 	vars.move = 0;
 	vars.player[SIZE] = RESIZE / 6;
 	vars.player[ROTATE] = 0;
 	vars.player[X] = vars.map->respawn[X] + 0.5;
 	vars.player[Y] = vars.map->respawn[Y] + 0.5;
-	//vars.mlx = mlx;
-	//vars.win = win;
-	//vars.data = &img;
-	//printf("ERROR -> %s\n", strerror(errno));
-
-	mlx_hook(vars.win, keyPress, 0, press_hook, &vars);
-	mlx_hook(vars.win, buttonPress, ButtonPressMask, mouse_hook, &vars);
-	mlx_hook(vars.win, keyRelease, 0, release_hook, &vars);
+	if (vars.save)
+		render_next_frame(&vars);
 	mlx_loop_hook(vars.mlx, render_next_frame, &vars);
-
-	mlx_loop(vars.mlx);	//mlx_loop(mlx);
+	mlx_hook(vars.win, keyPress, 0, press_hook, &vars);
+	mlx_hook(vars.win, destroyNotify, 0, mouse_hook, &vars);
+	mlx_hook(vars.win, keyRelease, 0, release_hook, &vars);
+	mlx_loop(vars.mlx);
 	return (1);
 }
 

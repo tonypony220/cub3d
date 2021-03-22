@@ -98,7 +98,7 @@ void	create_bmp_file(char *img, char *filename, int w, int h, int bpp)
 	params.height = h;
 	params.width = w;
 
-	fd = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0x777);
+	fd = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0777);
 	put_header(fd, params);
 	invert_img(img, inverted, params);
 	write(fd, inverted, h * w * (bpp >> 3));
