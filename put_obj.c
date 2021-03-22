@@ -14,9 +14,11 @@ void		put_player(t_vars *vars)
 		find_ray_dir_and_initial_len(vars, &cords);
 		cast_ray(vars, &cords);
 		calculate_perp_dist(vars, &cords);
-		line_len = (vars->map->resolution_hight * RESIZE / cords.perpWallDist);
+		//write(1, "HERE!\n", 6);
+		line_len = (vars->map->resolution_hight * RESIZE  / cords.perpWallDist);
 		if (cords.perpWallDist == 0)
 			line_len = vars->map->resolution_hight;
+		line_len = (int)(line_len * vars->win_k);
 		vars->map->zbuf[x] = cords.perpWallDist;
 		find_x_texture_cord(&cords, vars);
 		put_textured_line(vars, line_len, &cords, x);
@@ -60,6 +62,7 @@ void			put_textured_line(t_vars *vars, int line_len,
 	int			end_of_line; // not same as used for vertical line in tutorial
 
 	start_of_line = (vars->map->resolution_hight >> 1) - (line_len >> 1);
+	//start_of_line = (int)(start_of_line * k);
 	start_of_line *= start_of_line > 0;
 	end_of_line = (vars->map->resolution_hight >> 1) + (line_len >> 1);
 	if (end_of_line > vars->map->resolution_hight)

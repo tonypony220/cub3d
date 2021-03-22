@@ -9,8 +9,8 @@ void			find_distanse_to_sprites(t_vars *vars)
 	{
 		vars->map->sprites_order[i] = i;
 		vars->map->sprites_dist[i] =
-				(pow(vars->player[X] - vars->map->sprites[i].cord[X], 2))
-				+ (pow(vars->player[Y] - vars->map->sprites[i].cord[Y], 2));
+				(float)(pow(vars->player[X] - vars->map->sprites[i].cord[X], 2))
+				+ (float)(pow(vars->player[Y] - vars->map->sprites[i].cord[Y], 2));
 	}
 }
 
@@ -47,14 +47,14 @@ void			find_projection_size(t_vars *vars, t_ray *cords, t_spr *spr)
 {
 	int h;
 
-	h = vars->map->resolution_hight;
-	spr->height = abs((int)(h / spr->transform[Y]));
+	h = (double)vars->map->resolution_hight;
+	spr->height = abs((int)(h / spr->transform[Y] * (double)vars->win_k));
 	spr->draw[Y][0] = -(spr->height >> 1) + (h >> 1);
 	spr->draw[Y][0] *= spr->draw[Y][0] >= 0;
 	spr->draw[Y][1] = (spr->height >> 1) + (h >> 1);
 	if (spr->draw[Y][1] >= h)
 		spr->draw[Y][1] = h - 1;
-	spr->width = abs((int)(h / spr->transform[Y]));
+	spr->width = abs((int)(h / spr->transform[Y]) * (double)vars->win_k);
 	spr->draw[X][0] = -(spr->width >> 1) + spr->screen[X];
 	spr->draw[X][0] *= spr->draw[X][0] >= 0;
 	spr->draw[X][1] = (spr->width >> 1) + spr->screen[X];

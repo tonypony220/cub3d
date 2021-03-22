@@ -6,77 +6,8 @@ int             release_hook(int button, t_vars *vars)
 	return (button);
 }
 
-int			wall_crossed(t_vars *vars, double x, double y)
-{
-	char 	val;
-
-	val = *(vars->map->map + (int)x + ((int)y * vars->map->width));
-	if (!ft_strchr("0N2", val))
-		return (1);
-	return (0);
-}
-
-double 	map_move_with_buttons(int button, int axis)
-{
-	double move_val;
-
-	move_val = 1.0;
-
-	if (button == W_BUTTON && axis == Y)
-		return (move_val);
-	if (button == A_BUTTON && axis == X)
-		return (-move_val);
-	if (button == S_BUTTON && axis == Y)
-		return (-move_val);
-	if (button == D_BUTTON && axis == X)
-		return (move_val);
-	return (0);
-
-}
-
-void move_player(t_vars *vars, int button)
-{
-	double move_val = 0.08; //RESIZE / 12;
-	double move[2];
-	move[X] = move_val // * RESIZE / 12
-			* map_move_with_buttons(button, Y) * sin(vars->player[RAD])
-			+ move_val
-			* map_move_with_buttons(button, X) * cos(vars->player[RAD]);
-	move[Y] = move_val // * RESIZE / 12
-			* map_move_with_buttons(button, Y) * cos(vars->player[RAD])
-			+ move_val
-			* map_move_with_buttons(button, X) * -sin(vars->player[RAD]);
-			vars->player[X] += move[X]
-					* !wall_crossed(vars,
-					 				vars->player[X] + move[X] * 2,
-					 				vars->player[Y]);
-			vars->player[Y] += move[Y]
-					* !wall_crossed(vars,
-					 				vars->player[X],
-					 				vars->player[Y] + move[Y] * 2);
-}
-
-void moving(t_vars *vars)
-{
-	if (vars->btns[LEFT_BUTTON])
-		vars->player[RAD] += 0.04;
-	if (vars->btns[RIGHT_BUTTON])
-		vars->player[RAD] -= 0.04;
-	if (vars->btns[W_BUTTON])
-		move_player(vars, W_BUTTON);
-	if (vars->btns[A_BUTTON])
-		move_player(vars, A_BUTTON);
-	if (vars->btns[S_BUTTON])
-		move_player(vars, S_BUTTON);
-	if (vars->btns[D_BUTTON])
-		move_player(vars, D_BUTTON);
-}
-
 int   press_hook(int button, t_vars *vars)
 {
-	static int counter;
-	static int pressed;
-
 	if (button == ESC_BUTTON)
 		vars->exit = 1;
 	else
@@ -114,6 +45,7 @@ int   mouse2_hook(int button, int x,int y)
 //		vars->player[ROTATE] += 0.01 * sing;
 //	}
 //}
+
 void	put_tex(t_vars *vars)
 {
 	int  y = -1, x;
@@ -129,9 +61,7 @@ void	put_tex(t_vars *vars)
 						+ vars->texs[0]->bits_per_pixel / 8 *tex_x));
 			tex_x++;
 		}
-
 	}
-
 }
 
 int     render_next_frame(t_vars *vars)
@@ -151,7 +81,6 @@ int     render_next_frame(t_vars *vars)
 						vars->data->bits_per_pixel);
 		exit(cub_exit(vars, 0));
 	}
-	//mlx_clear_window(vars->mlx, vars->win);
 	vars->move++;
 	vars->move *= (vars->move < ((1 << 31) + 1) * -1);
 	mlx_put_image_to_window(vars->mlx, vars->win, img.img, 0, 0);
@@ -160,9 +89,17 @@ int     render_next_frame(t_vars *vars)
 
 int	create_screen(t_vars *vars)
 {
-	printf("IMG\n");
-	//vars->data->img = NULL;
-	//vars->data->addr = NULL;
+	int w;
+	int h;
+
+	mlx_get_screen_size(vars->mlx, &w, &h);
+	if (vars->map->resolution_hight > h)
+		vars->map->resolution_hight = h;
+	if (vars->map->resolution_width > w)
+		vars->map->resolution_width = w;
+	vars->win_k = ((double)vars->map->resolution_width
+				   / (double)vars->map->resolution_hight)
+						* (double)h / (double)w;
 	if (!(vars->data = ft_calloc(sizeof(t_data), 1)))
 		return (0);
 	if (!(vars->data->img = mlx_new_image(vars->mlx,
@@ -174,10 +111,10 @@ int	create_screen(t_vars *vars)
 											   &vars->data->line_length,
 											   &vars->data->endian)))
 		return (0);
-	if (!(vars->data->buffer = ft_calloc(sizeof(int)
-			* vars->map->resolution_hight * vars->map->resolution_width, 1)))
-		return (0);
-	printf("%d DATA %dline len ", vars->data->bits_per_pixel, vars->data->line_length);
+///	if (!(vars->data->buffer = ft_calloc(sizeof(int)
+///			* vars->map->resolution_hight * vars->map->resolution_width, 1)))
+///		return (0);
+//	printf("%d DATA %dline len ", vars->data->bits_per_pixel, vars->data->line_length);
 	return (1);
 }
 

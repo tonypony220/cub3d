@@ -175,7 +175,8 @@ int			validate_map_params(t_map *map)
 		//printf("path tex %d -> %s\n", i, map->texture_path[i]);
 		if (!(map->path_provided & (1 << i)) && BEHAVE_HARD)
 			return (0);
-		if (map->path_provided & (1 << i) && !map->texture_path[i])
+		if (map->path_provided & (1 << i)
+		&& (!map->texture_path[i] || ft_strlen(map->texture_path[i]) < 2))
 		{
 			if (BEHAVE_HARD)
 				return (0);
@@ -237,7 +238,10 @@ int			validate_map(t_map *map)
 	if (!validate_map_params(map)
 	|| !check_map_parametrs(map)
 	|| map->invalid)
+	{
+		//system("leaks run");
 		return (0);
+	}
 //	print_map(map, 1);
 	printf("map->invalid = %d", map->invalid);
 	return (1);
@@ -261,7 +265,7 @@ t_map		*map_parser(char *filename)
 		return (free_map(map));
 	var[CURRENT_LEN] = var[COUNTER];
 	parse_map(filename, map, var);
-	print_map(map, 0);
+//	print_map(map, 0);
 	if (!validate_map(map)
 	|| !(map->zbuf = ft_calloc(sizeof(double), map->resolution_width)))
 		return (free_map(map));  /* free wiil inside */

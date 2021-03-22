@@ -13,6 +13,12 @@
 #include <stdio.h>
 #include <fcntl.h>
 
+#define RED 	"\033[1;31m"
+#define GREEN  	"\033[0;32m"
+#define RESET  	"\033[0;0m"
+#define BOLD   	"\033[;1m"
+#define REVERSE "\033[;7m"
+
 #define SCREEN_WIDTH 1024
 #define SCREEN_HEIGHT 680
 #define PI 3.1415926535
@@ -81,7 +87,7 @@ typedef struct  s_map
 	int         width;
 	int			sprite_counter;
 	int			*sprites_order;
-	double 		*sprites_dist;
+	float 		*sprites_dist;
 	t_sprite	*sprites;
 	double		*zbuf;
 	char        *map;
@@ -114,6 +120,7 @@ typedef struct  s_vars
 	char		save;
 	double		player[5];
 	char		btns[256];
+	double 		win_k;
 }               t_vars;
 
 typedef struct  s_ray
@@ -151,7 +158,7 @@ int				cub_exit(t_vars *vars, int exit_code);
 void			find_x_texture_cord(t_ray *crds, t_vars *vars);
 
 void			find_distanse_to_sprites(t_vars *vars);
-void			selection_sorting_sprite(double arr_val[], int arr_pos[],
+void			selection_sorting_sprite(float arr_val[], int arr_pos[],
 											int n);
 void			project_sprites(t_vars *vars, t_ray *cd);
 void			find_projection_size(t_vars *vars, t_ray *cords, t_spr *spr);
@@ -175,6 +182,7 @@ void			calculate_perp_dist(t_vars *vars, t_ray *cords);
 int				get_pole_by_ray_dir(t_ray *cords);
 void			put_textured_line(t_vars *vars, int line_len,
 								  t_ray *cords, int x);
+void			moving(t_vars *vars);
 
 #define  keyPress         2
 #define  keyRelease       3

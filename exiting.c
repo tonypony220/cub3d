@@ -5,6 +5,7 @@ int			free_map(t_map *map)
 	int 	i;
 
 	i = -1;
+#if 1
 	while (++i < NUM_MAP_PATHS && map->texture_path[i])
 	{
 		printf("freeing %s path\n", map->texture_path[i]);
@@ -39,6 +40,7 @@ int			free_map(t_map *map)
 	printf("addr %p\n", map->visited);
 	printf("addr %p\n", map->map);
 	free(map);
+#endif
 	return (0);
 }
 
@@ -81,11 +83,13 @@ int 		cub_exit(t_vars *vars, int exit_code)
 	///if (vars->mlx) ???
 	printf("mlx %p\n", vars->mlx);
 	if (vars->mlx)
-		//free(vars->mlx);
+		free(vars->mlx);
 	if (exit_code)
 	{
+		printf(RED);
 		printf("ERROR\n");
 		printf("errno: '%s'\n", strerror(errno));
+		printf(RESET);
 	}
 	system("leaks run");
 	return (exit_code);
