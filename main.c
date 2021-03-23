@@ -14,6 +14,8 @@
 
 int			render_next_frame(t_vars *vars)
 {
+	int screen_size[2];
+
 	if (vars->exit)
 		exit(cub_exit(vars, 0));
 	moving(vars);
@@ -22,9 +24,10 @@ int			render_next_frame(t_vars *vars)
 	put_player(vars);
 	if (vars->save)
 	{
+		screen_size[X] = vars->map->resolution_width;
+		screen_size[Y] = vars->map->resolution_hight;
 		create_bmp_file(vars->data->addr, "scr_shot.bmp",
-						vars->map->resolution_width,
-						vars->map->resolution_hight,
+						screen_size,
 						vars->data->bits_per_pixel);
 		exit(cub_exit(vars, 0));
 	}

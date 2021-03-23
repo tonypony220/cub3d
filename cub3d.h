@@ -1,7 +1,8 @@
 #ifndef CUB3D_H
 # define CUB3D_H
 
-#define BEHAVE_HARD 0
+#define BEHAVE_HARD 1
+#define LEAKS 0
 
 #include "mlx/mlx.h"
 #include "libft/libft.h"
@@ -45,7 +46,7 @@
 #define NUMBER_LINE_MAP_FROM 0
 #define COUNTER 1
 #define CURRENT_LEN 2
-#define CHAR_OF_EMPTY_SPACE '.'
+#define EMPTY_CHR '.'
 
 #define NO 0
 #define SO 1
@@ -136,24 +137,27 @@ typedef struct  s_ray
 	double		on_wall;
 	int			tex[2];
 	int			wall_reached;
-	int			side; //
+	int			side;
 	int			cur_tex;
 }               t_ray;
 
-void 			put_map(t_vars *vars);
+typedef struct  s_params
+{
+	int		height;
+	int		width;
+	int		bpp;
+
+}               t_params;
+
 void			put_player(t_vars *vars);
-void			resize_map(t_map *map, int times);
-int				check_map_paramets(t_map *map);
 int     		render_next_frame(t_vars *vars);
 t_map			*map_parser(char *filename);
-int				logn(long n, unsigned long base, int unsig, int islong);
 int				create_trgb(int t, int r, int g, int b);
 void        	pixel_put(t_vars *vars, int x, int y, int color);
 void			fill_half_screen(t_vars *vars, int which_half, int color);
 
 int 			load_texture(t_vars *vars, int num);
 int				load_textures(t_vars *vars);
-int 			generate_texture(t_vars *vars, int i);
 int				cub_exit(t_vars *vars, int exit_code);
 void			find_x_texture_cord(t_ray *crds, t_vars *vars);
 void			find_distanse_to_sprites(t_vars *vars);
@@ -164,7 +168,7 @@ void			find_projection_size(t_vars *vars, t_spr *spr);
 void			draw_sprite(t_vars *vars, t_spr *spr);
 void 			combinate_all_moves(char *move);
 void			dfs(t_map *map, char *mv, int x, int y);
-void			create_bmp_file(char *img, char *file, int w, int h, int bpp);
+void			create_bmp_file(char *img, char *file, int size[], int bpp);
 void			*free_map(t_map *map);
 int				strchrs(char *str, char c);
 int				only_symbols(char *symbols, char *line);
@@ -180,7 +184,13 @@ void			moving(t_vars *vars);
 int             release_hook(int button, t_vars *vars);
 int   			press_hook(int button, t_vars *vars);
 int				mouse_hook(t_vars *vars);
+int				parse_color(char* line, int i, t_map *map);
+void			parse_line(char *line,  t_map *map);
+void 			fill_map(t_map *map, char *line);
+void			parse_map(char *filename, t_map *map, int *var);
+void			wtf_it_must_be_done_that_way(char **tex_ids);
 
+void			parse_resolution(char *p, t_map *map);
 #define  keyPress         2
 #define  keyRelease       3
 #define  buttonPress      4
@@ -244,4 +254,4 @@ int				mouse_hook(t_vars *vars);
 # define ColormapChangeMask (1L<<23)
 # define OwnerGrabButtonMask (1L<<24)
 
-#endif //CUB3D_HEADERS_H
+#endif

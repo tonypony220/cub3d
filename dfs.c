@@ -47,7 +47,7 @@ void		dfs(t_map *map, char *mv, int x, int y)
 		if (xx >= 0 && xx < map->width && yy >= 0 && yy < map->hight)
 		{
 			if (!*(map->visited + xx + yy * map->width)
-				&& *(map->map + xx + yy * map->width) == CHAR_OF_EMPTY_SPACE)
+				&& *(map->map + xx + yy * map->width) == EMPTY_CHR)
 				map->invalid++;
 			if (!*(map->visited + xx + yy * map->width)
 				&& ft_strchr("N02", *(map->map + xx + yy * map->width)))
