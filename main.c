@@ -95,9 +95,9 @@ int			main(int argc, char **argv)
 	if (vars.save)
 		render_next_frame(&vars);
 	mlx_loop_hook(vars.mlx, render_next_frame, &vars);
-	mlx_hook(vars.win, keyPress, 0, press_hook, &vars);
-	mlx_hook(vars.win, destroyNotify, 0, mouse_hook, &vars);
-	mlx_hook(vars.win, keyRelease, 0, release_hook, &vars);
+	mlx_hook(vars.win, KEYPRESS, 0, press_hook, &vars);
+	mlx_hook(vars.win, DESTROY_NOTIF, 0, mouse_hook, &vars);
+	mlx_hook(vars.win, KEYRELEASE, 0, release_hook, &vars);
 	mlx_loop(vars.mlx);
 	return (1);
 }

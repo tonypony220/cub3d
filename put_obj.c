@@ -26,11 +26,11 @@ void			put_player(t_vars *vars)
 		find_ray_dir_and_initial_len(vars, &cords);
 		cast_ray(vars, &cords);
 		calculate_perp_dist(vars, &cords);
-		line_len = (vars->map->resolution_hight * RESIZE / cords.perpWallDist);
-		if (cords.perpWallDist == 0)
+		line_len = (vars->map->resolution_hight * RESIZE / cords.perp);
+		if (cords.perp == 0)
 			line_len = vars->map->resolution_hight;
 		line_len = (int)(line_len * vars->win_k);
-		vars->map->zbuf[x] = cords.perpWallDist;
+		vars->map->zbuf[x] = cords.perp;
 		find_x_texture_cord(&cords, vars);
 		put_textured_line(vars, line_len, &cords, x);
 	}
@@ -56,7 +56,7 @@ void			find_x_texture_cord(t_ray *cords, t_vars *vars)
 {
 	cords->cur_tex = get_pole_by_ray_dir(cords);
 	cords->on_wall = vars->player[!cords->side]
-			+ cords->perpWallDist * cords->ray_dir[!cords->side];
+			+ cords->perp * cords->ray_dir[!cords->side];
 	cords->on_wall -= floor((cords->on_wall));
 	cords->tex[X] = (int)(cords->on_wall
 						* (double)vars->texs[cords->cur_tex]->size[X]);

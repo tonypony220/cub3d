@@ -1,6 +1,6 @@
 dir		=   .
 
-SRCS	=	main.c map_parser.c resize_map.c color.c put_map.c put_pixel.c put_obj.c textures.c exiting.c sort.c \
+SRCS	=	main.c map_parser.c color.c put_pixel.c put_obj.c textures.c exiting.c sort.c \
             dfs.c make_bmp.c casting.c utils.c sprites.c moving.c hooks.c parsing.c
 
 OBJS	=	${SRCS:.c=.o}

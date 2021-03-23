@@ -6,7 +6,7 @@
 /*   By: mehtel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 19:28:26 by mehtel            #+#    #+#             */
-/*   Updated: 2021/03/23 19:30:28 by mehtel           ###   ########.fr       */
+/*   Updated: 2021/03/23 21:54:31 by mehtel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,8 +91,8 @@ void		init_ray(t_vars *vars, t_ray *cords, int x)
 
 void		calculate_perp_dist(t_vars *vars, t_ray *cords)
 {
-	cords->perpWallDist = (cords->on_map[cords->side]
-						- vars->player[cords->side]
-						+ (1.0 - cords->move[cords->side]) / 2)
-						/ cords->ray_dir[cords->side];
+	cords->perp = (cords->on_map[cords->side]
+					- vars->player[cords->side]
+					+ (1.0 - cords->move[cords->side]) / 2)
+					/ cords->ray_dir[cords->side];
 }

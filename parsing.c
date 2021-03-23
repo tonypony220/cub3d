@@ -94,7 +94,7 @@ void			fill_map(t_map *map, char *line)
 		*(map->map + i++ + line_number * map->width) = symbol_to_put;
 	}
 	while (i < map->width)
-		*(map->map + i++ + line_number * map->width) = CHAR_OF_EMPTY_SPACE;
+		*(map->map + i++ + line_number * map->width) = EMPTY_CHR;
 	line_number++;
 }
 

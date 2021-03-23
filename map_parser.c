@@ -117,8 +117,5 @@ t_map		*map_parser(char *filename)
 	if (!validate_map(map)
 	|| !(map->zbuf = ft_calloc(sizeof(double), map->resolution_width)))
 		return (free_map(map));
-	if (RESIZE > 1)
-		resize_map(map, RESIZE);
-	write(1, "\t\t\tPARSER\n", 10);
 	return (map);
 }
