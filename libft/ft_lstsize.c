@@ -1,26 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   put_pixel.c                                        :+:      :+:    :+:   */
+/*   ft_lstsize.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mehtel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/23 19:27:14 by mehtel            #+#    #+#             */
-/*   Updated: 2021/03/23 19:27:16 by mehtel           ###   ########.fr       */
+/*   Created: 2020/11/15 00:01:08 by mehtel            #+#    #+#             */
+/*   Updated: 2020/11/15 00:01:18 by mehtel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub3d.h"
+#include "libft.h"
 
-void		pixel_put(t_vars *vars, int x, int y, int color)
+int		ft_lstsize(t_list *lst)
 {
-	char	*dst;
+	int	len;
 
-	dst = vars->data->addr + (y * vars->data->line_length + x
-			* (vars->data->bits_per_pixel / 8));
-	if (x >= 0
-		&& y >= 0
-		&& x < vars->map->resolution_width
-		&& y < vars->map->resolution_hight)
-		*(unsigned int*)dst = color;
+	len = 0;
+	while (lst && ++len)
+		lst = lst->next;
+	return (len);
 }

@@ -1,26 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   put_pixel.c                                        :+:      :+:    :+:   */
+/*   ft_strmapi.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mehtel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/23 19:27:14 by mehtel            #+#    #+#             */
-/*   Updated: 2021/03/23 19:27:16 by mehtel           ###   ########.fr       */
+/*   Created: 2020/11/14 23:56:11 by mehtel            #+#    #+#             */
+/*   Updated: 2020/11/14 23:56:37 by mehtel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub3d.h"
+#include "libft.h"
 
-void		pixel_put(t_vars *vars, int x, int y, int color)
+char				*ft_strmapi(char const *s, char (*f)(unsigned int, char))
 {
-	char	*dst;
+	char			*str;
+	unsigned int	i;
 
-	dst = vars->data->addr + (y * vars->data->line_length + x
-			* (vars->data->bits_per_pixel / 8));
-	if (x >= 0
-		&& y >= 0
-		&& x < vars->map->resolution_width
-		&& y < vars->map->resolution_hight)
-		*(unsigned int*)dst = color;
+	if (!(str = (char*)malloc(sizeof(char) * (ft_strlen((char*)s) + 1))))
+		return (str);
+	i = -1;
+	while (s[++i])
+		str[i] = f(i, s[i]);
+	str[i] = '\0';
+	return (str);
 }

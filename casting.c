@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   casting.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mehtel <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/03/23 19:28:26 by mehtel            #+#    #+#             */
+/*   Updated: 2021/03/23 19:30:28 by mehtel           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "cub3d.h"
 
 void		find_ray_dir_and_initial_len(t_vars *vars, t_ray *cords)
@@ -28,7 +40,7 @@ void		find_ray_dir_and_initial_len(t_vars *vars, t_ray *cords)
 	}
 }
 
-void 		cast_ray(t_vars *vars, t_ray *cords)
+void		cast_ray(t_vars *vars, t_ray *cords)
 {
 	char	block;
 
@@ -48,49 +60,39 @@ void 		cast_ray(t_vars *vars, t_ray *cords)
 			cords->side = Y;
 		}
 		block = *(vars->map->map + (int)(cords->on_map[X])
-				  + vars->map->width * (int)(cords->on_map[Y]));
-		if (block != '0' && block != 'N' && block != '2')// && block2 != '0')
+				+ vars->map->width * (int)(cords->on_map[Y]));
+		if (block != '0' && block != 'N' && block != '2')
 		{
 			cords->wall_reached = 1;
-			//	pixel_put(vars, (int) cords.on_map[X],
-			//			  (int) cords.on_map[Y],
-			//			  color);
 		}
-		//pixel_put(vars, (int) cords.on_map[X],
-		//		  (int) cords.on_map[Y],
-		//		  color + 100);
-		//printf("move %d %d\n", cords.move[X], cords.move[Y]);
-		//count++;
 	}
-
 }
 
 void		init_player_screen(t_vars *vars, t_ray *cords)
 {
-	cords->dir[X] = sin(vars->player[RAD]); //-1;
-	cords->dir[Y] = cos(vars->player[RAD]); //0;
-	cords->plane[X] = 0.66 * cos(vars->player[RAD]); //  * cos
-	cords->plane[Y] = -0.66 * sin(vars->player[RAD]); // * cos
+	cords->dir[X] = sin(vars->player[RAD]);
+	cords->dir[Y] = cos(vars->player[RAD]);
+	cords->plane[X] = 0.66 * cos(vars->player[RAD]);
+	cords->plane[Y] = -0.66 * sin(vars->player[RAD]);
 }
 
 void		init_ray(t_vars *vars, t_ray *cords, int x)
 {
-	double	cameraX;
+	double	camera_x;
 
-	cameraX = 2 * x / (double)vars->map->resolution_width - 1;
-	cords->ray_dir[X] = cords->dir[X] + cords->plane[X] * cameraX;
-	cords->ray_dir[Y] = cords->dir[Y] + cords->plane[Y] * cameraX;
+	camera_x = 2 * x / (double)vars->map->resolution_width - 1;
+	cords->ray_dir[X] = cords->dir[X] + cords->plane[X] * camera_x;
+	cords->ray_dir[Y] = cords->dir[Y] + cords->plane[Y] * camera_x;
 	cords->on_map[X] = (int)(vars->player[X]);
 	cords->on_map[Y] = (int)(vars->player[Y]);
 	cords->delta_len[X] = fabs(1 / cords->ray_dir[X]);
 	cords->delta_len[Y] = fabs(1 / cords->ray_dir[Y]);
 }
 
-
 void		calculate_perp_dist(t_vars *vars, t_ray *cords)
 {
 	cords->perpWallDist = (cords->on_map[cords->side]
-						   - vars->player[cords->side]
-						   + (1.0 - cords->move[cords->side]) / 2)
-						  / cords->ray_dir[cords->side];
+						- vars->player[cords->side]
+						+ (1.0 - cords->move[cords->side]) / 2)
+						/ cords->ray_dir[cords->side];
 }

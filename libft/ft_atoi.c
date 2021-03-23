@@ -1,26 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   put_pixel.c                                        :+:      :+:    :+:   */
+/*   ft_atoi.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mehtel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/23 19:27:14 by mehtel            #+#    #+#             */
-/*   Updated: 2021/03/23 19:27:16 by mehtel           ###   ########.fr       */
+/*   Created: 2020/11/14 23:36:16 by mehtel            #+#    #+#             */
+/*   Updated: 2020/11/14 23:38:58 by mehtel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub3d.h"
+#include "libft.h"
 
-void		pixel_put(t_vars *vars, int x, int y, int color)
+int			ft_atoi(char *str)
 {
-	char	*dst;
+	int		sign;
+	long	num;
 
-	dst = vars->data->addr + (y * vars->data->line_length + x
-			* (vars->data->bits_per_pixel / 8));
-	if (x >= 0
-		&& y >= 0
-		&& x < vars->map->resolution_width
-		&& y < vars->map->resolution_hight)
-		*(unsigned int*)dst = color;
+	num = 0;
+	while (*str == 32 || (*str >= 9 && *str <= 13))
+		str++;
+	sign = (*str == '-') ? -1 : 1;
+	(*str == '-' || *str == '+') ? str++ : str;
+	while (*str >= '0' && *str <= '9')
+	{
+		if ((num = num * 10 + *str++ - '0') < 0)
+			return (sign > 0 ? -1 : 0);
+	}
+	return ((int)num * sign);
 }

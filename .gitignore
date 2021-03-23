@@ -4,7 +4,6 @@ map
 minilibx_mms_20200219
 minilibx_mms_20200219_beta.tgz
 minilibx_opengl.tgz
-mlx
 run
 a.out
 m.c
@@ -16,3 +15,8 @@ floor.c
 sprite.c
 circle.c
 scr_shot.bmp
+map.cub
+map0.cub
+run.dSYM/
+cub3D
+*.a

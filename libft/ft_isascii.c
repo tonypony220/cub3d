@@ -1,26 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   put_pixel.c                                        :+:      :+:    :+:   */
+/*   ft_isascii.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mehtel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/23 19:27:14 by mehtel            #+#    #+#             */
-/*   Updated: 2021/03/23 19:27:16 by mehtel           ###   ########.fr       */
+/*   Created: 2020/11/14 23:44:05 by mehtel            #+#    #+#             */
+/*   Updated: 2020/11/14 23:44:10 by mehtel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub3d.h"
+#include "libft.h"
 
-void		pixel_put(t_vars *vars, int x, int y, int color)
+int		ft_isascii(int c)
 {
-	char	*dst;
-
-	dst = vars->data->addr + (y * vars->data->line_length + x
-			* (vars->data->bits_per_pixel / 8));
-	if (x >= 0
-		&& y >= 0
-		&& x < vars->map->resolution_width
-		&& y < vars->map->resolution_hight)
-		*(unsigned int*)dst = color;
+	return (c >= 0 && c <= 127);
 }

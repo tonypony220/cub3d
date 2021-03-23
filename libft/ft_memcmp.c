@@ -1,26 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   put_pixel.c                                        :+:      :+:    :+:   */
+/*   ft_memcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mehtel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/23 19:27:14 by mehtel            #+#    #+#             */
-/*   Updated: 2021/03/23 19:27:16 by mehtel           ###   ########.fr       */
+/*   Created: 2020/11/14 23:04:42 by mehtel            #+#    #+#             */
+/*   Updated: 2020/11/14 23:05:14 by mehtel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub3d.h"
+#include "libft.h"
 
-void		pixel_put(t_vars *vars, int x, int y, int color)
+int	ft_memcmp(const void *s1, const void *s2, size_t n)
 {
-	char	*dst;
-
-	dst = vars->data->addr + (y * vars->data->line_length + x
-			* (vars->data->bits_per_pixel / 8));
-	if (x >= 0
-		&& y >= 0
-		&& x < vars->map->resolution_width
-		&& y < vars->map->resolution_hight)
-		*(unsigned int*)dst = color;
+	if (!n)
+		return (0);
+	while (*(unsigned char*)s1 == *(unsigned char*)s2 && --n)
+	{
+		s1++;
+		s2++;
+	}
+	return (*(unsigned char*)s1 - *(unsigned char*)s2);
 }

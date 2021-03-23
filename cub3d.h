@@ -156,22 +156,16 @@ int				load_textures(t_vars *vars);
 int 			generate_texture(t_vars *vars, int i);
 int				cub_exit(t_vars *vars, int exit_code);
 void			find_x_texture_cord(t_ray *crds, t_vars *vars);
-
 void			find_distanse_to_sprites(t_vars *vars);
 void			selection_sorting_sprite(float arr_val[], int arr_pos[],
 											int n);
 void			project_sprites(t_vars *vars, t_ray *cd);
-void			find_projection_size(t_vars *vars, t_ray *cords, t_spr *spr);
-void			draw_sprite(t_vars *vars, t_ray *cords, t_spr *spr);
-
+void			find_projection_size(t_vars *vars, t_spr *spr);
+void			draw_sprite(t_vars *vars, t_spr *spr);
 void 			combinate_all_moves(char *move);
-
 void			dfs(t_map *map, char *mv, int x, int y);
-
 void			create_bmp_file(char *img, char *file, int w, int h, int bpp);
-
 void			*free_map(t_map *map);
-
 int				strchrs(char *str, char c);
 int				only_symbols(char *symbols, char *line);
 void			find_ray_dir_and_initial_len(t_vars *vars, t_ray *cords);
@@ -183,6 +177,9 @@ int				get_pole_by_ray_dir(t_ray *cords);
 void			put_textured_line(t_vars *vars, int line_len,
 								  t_ray *cords, int x);
 void			moving(t_vars *vars);
+int             release_hook(int button, t_vars *vars);
+int   			press_hook(int button, t_vars *vars);
+int				mouse_hook(t_vars *vars);
 
 #define  keyPress         2
 #define  keyRelease       3

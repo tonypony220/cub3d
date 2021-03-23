@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   sprites.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mehtel <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/03/23 19:18:42 by mehtel            #+#    #+#             */
+/*   Updated: 2021/03/23 19:20:31 by mehtel           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "cub3d.h"
 
 void			find_distanse_to_sprites(t_vars *vars)
@@ -17,10 +29,10 @@ void			find_distanse_to_sprites(t_vars *vars)
 
 void			project_sprites(t_vars *vars, t_ray *cd)
 {
-	int i;
-	double invert;
-	int *ord;
-	t_spr spr;
+	int			i;
+	double		invert;
+	int			*ord;
+	t_spr		spr;
 
 	i = -1;
 	ord = vars->map->sprites_order;
@@ -29,24 +41,24 @@ void			project_sprites(t_vars *vars, t_ray *cd)
 		spr.cr[X] = vars->map->sprites[ord[i]].cord[X] - vars->player[X];
 		spr.cr[Y] = vars->map->sprites[ord[i]].cord[Y] - vars->player[Y];
 		invert = 1.0 /
-				 (cd->plane[X] * cd->dir[Y] - cd->dir[X] * cd->plane[Y]);
+				(cd->plane[X] * cd->dir[Y] - cd->dir[X] * cd->plane[Y]);
 		spr.transform[X] = invert
-						   * (cd->dir[Y] * spr.cr[X] - cd->dir[X] * spr.cr[Y]);
+						* (cd->dir[Y] * spr.cr[X] - cd->dir[X] * spr.cr[Y]);
 		spr.transform[Y] = invert
-						   * (-cd->plane[Y] * spr.cr[X]
-						   + cd->plane[X] * spr.cr[Y]);
+						* (-cd->plane[Y] * spr.cr[X]
+						+ cd->plane[X] * spr.cr[Y]);
 		if (spr.transform[Y] < 0)
 			continue;
 		spr.screen[X] = (int)((vars->map->resolution_width >> 1)
-							  * (1 + spr.transform[X] / spr.transform[Y]));
-		find_projection_size(vars, cd, &spr);
-		draw_sprite(vars, cd, &spr);
+							* (1 + spr.transform[X] / spr.transform[Y]));
+		find_projection_size(vars, &spr);
+		draw_sprite(vars, &spr);
 	}
 }
 
-void			find_projection_size(t_vars *vars, t_ray *cords, t_spr *spr)
+void			find_projection_size(t_vars *vars, t_spr *spr)
 {
-	int h;
+	int			h;
 
 	h = vars->map->resolution_hight;
 	spr->height = abs((int)(h / spr->transform[Y] * (double)vars->win_k));
@@ -63,19 +75,19 @@ void			find_projection_size(t_vars *vars, t_ray *cords, t_spr *spr)
 		spr->draw[X][1] = vars->map->resolution_width - 1;
 }
 
-void 			draw_vertical_of_sprite(t_vars *vars, t_spr *spr, int *tex,
-										int startY)
+void			draw_vertical_of_sprite(t_vars *vars, t_spr *spr, int *tex,
+										int start_y)
 {
-	int color;
-	int d;
+	int			color;
+	int			d;
 
-	spr->draw[Y][0] = startY;
+	spr->draw[Y][0] = start_y;
 	while (spr->draw[Y][0]++ < spr->draw[Y][1] - 1)
 	{
 		d = (spr->draw[Y][0]) * 256 - vars->map->resolution_hight
-									  * 128 + spr->height * 128;
+									* 128 + spr->height * 128;
 		tex[Y] = ((d * vars->texs[S]->size[Y]) / spr->height) / 256;
-		color = *(int*)(vars->texs[S]->addr +
+		color = *(int*)(vars->texs[S]->addr
 						+ vars->texs[S]->line_length * tex[Y]
 						+ tex[X] * vars->texs[S]->bits_per_pixel / 8);
 		if ((color & 0x00FFFFFF) != 0)
@@ -83,22 +95,22 @@ void 			draw_vertical_of_sprite(t_vars *vars, t_spr *spr, int *tex,
 	}
 }
 
-void			draw_sprite(t_vars *vars, t_ray *cords, t_spr *spr)
+void			draw_sprite(t_vars *vars, t_spr *spr)
 {
-	int tex[2];
-	int tmpstartY;
+	int			tex[2];
+	int			y;
 
-	tmpstartY = spr->draw[Y][0];
+	y = spr->draw[Y][0];
 	while (spr->draw[X][0] < spr->draw[X][1])
 	{
 		tex[X] = (int)(256 * (spr->draw[X][0]
-							  - (-spr->width / 2 + spr->screen[X]))
-					   * vars->texs[S]->size[Y] / spr->width) / 256;
+							- (-spr->width / 2 + spr->screen[X]))
+						* vars->texs[S]->size[Y] / spr->width) / 256;
 		if (spr->draw[X][0] > -1
 			&& spr->draw[X][0] < vars->map->resolution_width
 			&& spr->transform[Y] < vars->map->zbuf[spr->draw[X][0]])
 		{
-			draw_vertical_of_sprite(vars, spr, tex, tmpstartY);
+			draw_vertical_of_sprite(vars, spr, tex, y);
 		}
 		spr->draw[X][0]++;
 	}

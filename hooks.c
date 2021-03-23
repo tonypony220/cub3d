@@ -1,26 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   put_pixel.c                                        :+:      :+:    :+:   */
+/*   hooks.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mehtel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/23 19:27:14 by mehtel            #+#    #+#             */
-/*   Updated: 2021/03/23 19:27:16 by mehtel           ###   ########.fr       */
+/*   Created: 2021/03/23 19:07:45 by mehtel            #+#    #+#             */
+/*   Updated: 2021/03/23 19:08:39 by mehtel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-void		pixel_put(t_vars *vars, int x, int y, int color)
+int	release_hook(int button, t_vars *vars)
 {
-	char	*dst;
+	vars->btns[button] = 0;
+	return (button);
+}
 
-	dst = vars->data->addr + (y * vars->data->line_length + x
-			* (vars->data->bits_per_pixel / 8));
-	if (x >= 0
-		&& y >= 0
-		&& x < vars->map->resolution_width
-		&& y < vars->map->resolution_hight)
-		*(unsigned int*)dst = color;
+int	press_hook(int button, t_vars *vars)
+{
+	if (button == ESC_BUTTON)
+		vars->exit = 1;
+	else
+		vars->btns[button] = 1;
+	return (button);
+}
+
+int	mouse_hook(t_vars *vars)
+{
+	vars->exit = 1;
+	return (1);
 }

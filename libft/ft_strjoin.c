@@ -1,26 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   put_pixel.c                                        :+:      :+:    :+:   */
+/*   ft_strjoin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mehtel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/23 19:27:14 by mehtel            #+#    #+#             */
-/*   Updated: 2021/03/23 19:27:16 by mehtel           ###   ########.fr       */
+/*   Created: 2020/11/14 23:49:39 by mehtel            #+#    #+#             */
+/*   Updated: 2020/11/14 23:50:40 by mehtel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub3d.h"
+#include "libft.h"
 
-void		pixel_put(t_vars *vars, int x, int y, int color)
+char		*ft_strjoin(char const *s1, char const *s2)
 {
-	char	*dst;
+	char	*str;
+	char	*tmp;
 
-	dst = vars->data->addr + (y * vars->data->line_length + x
-			* (vars->data->bits_per_pixel / 8));
-	if (x >= 0
-		&& y >= 0
-		&& x < vars->map->resolution_width
-		&& y < vars->map->resolution_hight)
-		*(unsigned int*)dst = color;
+	if ((str = malloc(sizeof(char) * (ft_strlen((char*)s1) \
+						+ ft_strlen((char*)s2) + 1))))
+	{
+		tmp = str;
+		while (*s1)
+			*tmp++ = *s1++;
+		while (*s2)
+			*tmp++ = *s2++;
+		*tmp = '\0';
+	}
+	return (str);
 }

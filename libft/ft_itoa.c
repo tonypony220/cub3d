@@ -1,26 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   put_pixel.c                                        :+:      :+:    :+:   */
+/*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mehtel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/23 19:27:14 by mehtel            #+#    #+#             */
-/*   Updated: 2021/03/23 19:27:16 by mehtel           ###   ########.fr       */
+/*   Created: 2020/11/14 23:55:26 by mehtel            #+#    #+#             */
+/*   Updated: 2020/11/14 23:56:00 by mehtel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub3d.h"
+#include "libft.h"
 
-void		pixel_put(t_vars *vars, int x, int y, int color)
+char		*ft_itoa(int n)
 {
-	char	*dst;
+	int		len;
+	int		tmp;
+	char	*str;
+	int		sign;
 
-	dst = vars->data->addr + (y * vars->data->line_length + x
-			* (vars->data->bits_per_pixel / 8));
-	if (x >= 0
-		&& y >= 0
-		&& x < vars->map->resolution_width
-		&& y < vars->map->resolution_hight)
-		*(unsigned int*)dst = color;
+	tmp = n;
+	sign = n >= 0 ? 1 : -1;
+	len = 1;
+	while (tmp /= 10)
+		len++;
+	(sign > 0) ? len : len++;
+	if ((str = malloc(sizeof(char) * len + 1)))
+	{
+		str[len] = '\0';
+		while (len--)
+		{
+			str[len] = (sign < 0 && !len) ? '-' : n % 10 * sign + '0';
+			n = n / 10;
+		}
+	}
+	return (str);
 }

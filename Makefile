@@ -1,11 +1,11 @@
 dir		=   .
 
 SRCS	=	main.c map_parser.c resize_map.c color.c put_map.c put_pixel.c put_obj.c textures.c exiting.c sort.c \
-            dfs.c make_bmp.c casting.c utils.c sprites.c moving.c
+            dfs.c make_bmp.c casting.c utils.c sprites.c moving.c hooks.c
 
 OBJS	=	${SRCS:.c=.o}
 
-CFLAGS	=    -O2 #-Wall -Wextra -Werror #-fsanitize=address
+CFLAGS	=    -O2 -Wall -Wextra -Werror #-fsanitize=address
 
 HEAD	=	cub3d.h
 
