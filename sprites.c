@@ -10,7 +10,8 @@ void			find_distanse_to_sprites(t_vars *vars)
 		vars->map->sprites_order[i] = i;
 		vars->map->sprites_dist[i] =
 				(float)(pow(vars->player[X] - vars->map->sprites[i].cord[X], 2))
-				+ (float)(pow(vars->player[Y] - vars->map->sprites[i].cord[Y], 2));
+				+ (float)(pow(vars->player[Y]
+				- vars->map->sprites[i].cord[Y], 2));
 	}
 }
 

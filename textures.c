@@ -1,6 +1,6 @@
 #include "cub3d.h"
 
-int generate_texture(t_vars *vars, char tex_num)
+int generate_texture(t_vars *vars, int tex_num)
 {
 	int x;
 	int y;
@@ -54,20 +54,16 @@ int load_textures(t_vars *vars)
 }
 
 
-int load_texture(t_vars *vars, char tex_num)
+int load_texture(t_vars *vars, int tex_num)
 
 {
-	//void    *mlx_png_file_to_image(void *mlx_ptr, char *file, int *width, int *height);
 	int w;
 	int h;
+
 	w = 0;
 	h = 0;
-	void *img;
-
 	vars->texs[tex_num] = ft_calloc(sizeof(t_data), 1);
-	printf("tex path [%d] '%s'\n", tex_num, vars->map->texture_path[tex_num]);
-	int fd = open(vars->map->texture_path[tex_num], O_RDONLY);
-	//printf("w %d\n", w);
+//	printf("tex path [%d] '%s'\n", tex_num, vars->map->texture_path[tex_num]);
 
 	if (ft_strnstr(vars->map->texture_path[tex_num], ".png",
 				ft_strlen(vars->map->texture_path[tex_num])))

@@ -1,25 +1,15 @@
 #include "cub3d.h"
 
-int			free_map(t_map *map)
+void		*free_map(t_map *map)
 {
 	int 	i;
 
 	i = -1;
-#if 1
 	while (++i < NUM_MAP_PATHS && map->texture_path[i])
 	{
-		printf("freeing %s path\n", map->texture_path[i]);
 		free(map->texture_path[i]);
 		map->texture_path[i] = 0;
-		printf("%p -> path\n", map->texture_path[i]);
 	}
-	printf("addr %p\n", map->sprites);
-	printf("addr %p\n", map->sprites_dist);
-	printf("addr %p\n", map->sprites_order);
-	printf("addr %p\n", map->zbuf);
-	printf("addr %p\n", map->visited);
-	printf("addr %p\n", map->map);
-
 	if (map->sprites)
 		free(map->sprites);
 	if (map->sprites_dist)
@@ -33,14 +23,7 @@ int			free_map(t_map *map)
 	if (map->map)
 		free(map->map);
 	ft_memset(map, 0, sizeof(t_map));
-	printf("addr %p\n", map->sprites);
-	printf("addr %p\n", map->sprites_dist);
-	printf("addr %p\n", map->sprites_order);
-	printf("addr %p\n", map->zbuf);
-	printf("addr %p\n", map->visited);
-	printf("addr %p\n", map->map);
 	free(map);
-#endif
 	return (0);
 }
 
@@ -100,6 +83,6 @@ int 		cub_exit(t_vars *vars, int exit_code)
 		printf("%s ERROR %s\n", RED, RESET);
 		printf("%s errno: '%s' %s\n", RED,  strerror(errno), RESET);
 	}
-	system("leaks --fullStacks run");
+	system("leaks --fullStacks cub3D\n");
 	return (exit_code);
 }

@@ -128,7 +128,7 @@ void 	fill_map(t_map *map, char *line)
 	//printf("%s\n", map->map);
 }
 
-int		parse_map(char *filename, t_map *map, int *var)
+void		parse_map(char *filename, t_map *map, int *var)
 {
 	int res;
 	int fd;

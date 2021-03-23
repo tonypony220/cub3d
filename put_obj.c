@@ -8,7 +8,6 @@ void		put_player(t_vars *vars)
 
 	init_player_screen(vars, &cords);
 	x = -1;
-	printf("%s rendering %s %g\n", RED, RESET, vars->win_k);
 	while (++x < vars->map->resolution_width)
 	{
 		init_ray(vars, &cords, x);
@@ -27,7 +26,6 @@ void		put_player(t_vars *vars)
 	selection_sorting_sprite(vars->map->sprites_dist,
 							 vars->map->sprites_order,
 							 vars->map->sprite_counter);
-	printf("%s rendering %s\n", GREEN, RESET);
 	project_sprites(vars, &cords);
 }
 

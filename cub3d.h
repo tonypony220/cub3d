@@ -1,7 +1,7 @@
 #ifndef CUB3D_H
 # define CUB3D_H
 
-#define BEHAVE_HARD 1
+#define BEHAVE_HARD 0
 
 #include "mlx/mlx.h"
 #include "libft/libft.h"
@@ -151,9 +151,9 @@ int				create_trgb(int t, int r, int g, int b);
 void        	pixel_put(t_vars *vars, int x, int y, int color);
 void			fill_half_screen(t_vars *vars, int which_half, int color);
 
-int 			load_texture(t_vars *vars, char num);
+int 			load_texture(t_vars *vars, int num);
 int				load_textures(t_vars *vars);
-int 			generate_texture(t_vars *vars, char i);
+int 			generate_texture(t_vars *vars, int i);
 int				cub_exit(t_vars *vars, int exit_code);
 void			find_x_texture_cord(t_ray *crds, t_vars *vars);
 
@@ -170,7 +170,7 @@ void			dfs(t_map *map, char *mv, int x, int y);
 
 void			create_bmp_file(char *img, char *file, int w, int h, int bpp);
 
-int				free_map(t_map *map);
+void			*free_map(t_map *map);
 
 int				strchrs(char *str, char c);
 int				only_symbols(char *symbols, char *line);

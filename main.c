@@ -68,7 +68,7 @@ int     render_next_frame(t_vars *vars)
 	moving(vars);
 	fill_half_screen(vars, 0, vars->map->ceiling_color);
 	fill_half_screen(vars, 1, vars->map->floor_color);
-	printf("%s RENDERING %s\n", GREEN, RESET);
+	//printf("%s RENDERING %s\n", GREEN, RESET);
 	put_player(vars);
 	if (vars->save)
 	{
@@ -89,7 +89,7 @@ int	create_screen(t_vars *vars)
 	int w;
 	int h;
 
-	mlx_get_screen_size( &w, &h);
+	mlx_get_screen_size(vars->mlx, &w, &h);
 	if (vars->map->resolution_hight > h)
 		vars->map->resolution_hight = h;
 	if (vars->map->resolution_width > w)
