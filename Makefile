@@ -5,7 +5,7 @@ SRCS	=	main.c map_parser.c color.c put_pixel.c put_obj.c textures.c exiting.c so
 
 OBJS	=	${SRCS:.c=.o}
 
-CFLAGS	=    -O2 -Wall -Wextra -Werror #-fsanitize=address
+CFLAGS	=    -O0 -Wall -Wextra -Werror -g #-fsanitize=address
 
 HEAD	=	cub3d.h
 

@@ -21,3 +21,7 @@ run.dSYM/
 cub3D
 *.a
 staff
+tester
+textures
+mlx_old
+map2

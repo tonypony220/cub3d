@@ -61,7 +61,7 @@ void		cast_ray(t_vars *vars, t_ray *cords)
 		}
 		block = *(vars->map->map + (int)(cords->on_map[X])
 				+ vars->map->width * (int)(cords->on_map[Y]));
-		if (block != '0' && block != 'N' && block != '2')
+		if (!ft_strchr("02NSEW", block))
 		{
 			cords->wall_reached = 1;
 		}

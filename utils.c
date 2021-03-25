@@ -68,7 +68,16 @@ void		wtf_it_must_be_done_that_way(char **tex_ids)
 	tex_ids[SO] = "SO";
 	tex_ids[WE] = "WE";
 	tex_ids[EA] = "EA";
-	tex_ids[S] = "S";
-	tex_ids[F] = "F";
-	tex_ids[C] = "C";
+	tex_ids[S] = "S ";
+	tex_ids[F] = "F ";
+	tex_ids[C] = "C ";
+	tex_ids[R] = "R ";
+}
+
+int			check_respawn(t_map *map)
+{
+	if (!map->respawns)
+		return (0);
+	map->invalid |= ERR_RSPWN;
+	return (1);
 }

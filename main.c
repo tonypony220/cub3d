@@ -66,9 +66,20 @@ int			create_screen(t_vars *vars)
 
 void		init_player(t_vars *vars)
 {
+	int spawn_dir;
+
+	if (vars->map->respawns == 'S')
+		spawn_dir = 0;
+	if (vars->map->respawns == 'N')
+		spawn_dir = 2;
+	if (vars->map->respawns == 'E')
+		spawn_dir = 1;
+	if (vars->map->respawns == 'W')
+		spawn_dir = 3;
 	vars->move = 0;
 	vars->player[SIZE] = RESIZE / 6;
-	vars->player[ROTATE] = 0;
+	//vars->player[ROTATE] = 0;
+	vars->player[RAD] = PI / 2 * spawn_dir;
 	vars->player[X] = vars->map->respawn[X] + 0.5;
 	vars->player[Y] = vars->map->respawn[Y] + 0.5;
 }
@@ -82,8 +93,8 @@ int			main(int argc, char **argv)
 	if (!(argc == 2 || argc == 3)
 	|| !ft_strnstr(argv[1], ".cub", ft_strlen(argv[1]))
 	|| (argc == 3 && (vars.save = 1) && ft_strncmp("--save", argv[2], 6)))
-		exit(cub_exit(&vars, 1));
-	if (!(vars.map = map_parser(argv[1]))
+		exit(cub_exit(&vars, 2));
+	if (!(vars.map = map_parser(argv[1], &vars))
 	|| !(vars.mlx = mlx_init())
 	|| !(create_screen(&vars))
 	|| !(load_textures(&vars))

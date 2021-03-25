@@ -67,8 +67,20 @@
 # define S  4
 # define F  5
 # define C  6
-# define NUM_PARAMS 7
+# define R  7
+# define NUM_PARAMS 8
 # define NUM_MAP_PATHS 5
+
+# define ERR_COLOR  (1 << 0)
+# define ERR_DBL    (1 << 1)
+# define ERR_PARAM  (1 << 2)
+# define ERR_FILE   (1 << 3)
+# define ERR_NONE   (1 << 4)
+# define ERR_PATH   (1 << 5)
+# define ERR_RES    (1 << 6)
+# define ERR_MALLOC (1 << 7)
+# define ERR_RSPWN	(1 << 8)
+# define ERR_MAP	(1 << 9)
 
 typedef struct	s_sprite
 {
@@ -105,8 +117,8 @@ typedef struct	s_map
 	double		*zbuf;
 	char		*map;
 	char		*visited;
-	int			respawns;
-	char		invalid;
+	char		respawns;
+	int			invalid;
 }				t_map;
 
 typedef struct	s_data
@@ -161,7 +173,7 @@ typedef struct	s_params
 
 void			put_player(t_vars *vars);
 int				render_next_frame(t_vars *vars);
-t_map			*map_parser(char *filename);
+t_map			*map_parser(char *filename, t_vars *vars);
 int				create_trgb(int t, int r, int g, int b);
 void			pixel_put(t_vars *vars, int x, int y, int color);
 void			fill_half_screen(t_vars *vars, int which_half, int color);
@@ -198,6 +210,7 @@ void			parse_line(char *line, t_map *map);
 void			fill_map(t_map *map, char *line);
 void			parse_map(char *filename, t_map *map, int *var);
 void			wtf_it_must_be_done_that_way(char **tex_ids);
+int				check_respawn(t_map *map);
 
 # define KEYPRESS         2
 # define KEYRELEASE       3

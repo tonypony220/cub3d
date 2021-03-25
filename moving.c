@@ -17,7 +17,7 @@ int			wall_crossed(t_vars *vars, double x, double y)
 	char	val;
 
 	val = *(vars->map->map + (int)x + ((int)y * vars->map->width));
-	if (!ft_strchr("0N2", val))
+	if (!ft_strchr("0NWSE2", val))
 		return (1);
 	return (0);
 }

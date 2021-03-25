@@ -38,7 +38,7 @@ void		dfs(t_map *map, char *mv, int x, int y)
 		return ;
 	*(map->visited + x + y * map->width) = 1;
 	if (x == 0 || x == (map->width - 1) || y == 0 || y == (map->hight - 1))
-		map->invalid++;
+		map->invalid |= ERR_MAP;
 	i = -1;
 	while (++i < 4)
 	{
@@ -48,9 +48,9 @@ void		dfs(t_map *map, char *mv, int x, int y)
 		{
 			if (!*(map->visited + xx + yy * map->width)
 				&& *(map->map + xx + yy * map->width) == EMPTY_CHR)
-				map->invalid++;
+				map->invalid |= ERR_MAP;
 			if (!*(map->visited + xx + yy * map->width)
-				&& ft_strchr("N02", *(map->map + xx + yy * map->width)))
+				&& ft_strchr("SWEN02", *(map->map + xx + yy * map->width)))
 				dfs(map, mv, xx, yy);
 		}
 	}
