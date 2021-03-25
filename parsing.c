@@ -45,7 +45,7 @@ int				parse_color(char *line, int i, t_map *map)
 
 static void		parse_resolution(char *p, t_map *map)
 {
-	if (!only_symbols("123456890 \t", p))
+	if (!only_symbols("1234567890 \t", p))
 		map->invalid |= ERR_RES;
 	while (*p > '9' && *p < '0')
 		p++;
@@ -130,8 +130,10 @@ void			parse_map(char *filename, t_map *map, int *var)
 		if (var[COUNTER] < var[NUMBER_LINE_MAP_FROM] && ft_strlen(line) > 1)
 				parse_line(line, map);
 		else if (var[COUNTER] >= var[NUMBER_LINE_MAP_FROM]
-		&& (ft_strlen(line) > 1 || (map->invalid |= ERR_MAP)))
-			fill_map(map, line);
+		&& ((ft_strlen(line) > 1 && only_symbols("\t 012NSWE", line))
+		|| (map->invalid |= ERR_MAP)))
+		
+		fill_map(map, line);
 		free(line);
 		var[COUNTER]++;
 	}

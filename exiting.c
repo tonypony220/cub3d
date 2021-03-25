@@ -78,6 +78,8 @@ char 	*err_msg(int err_code)
 		return ("Must be one respawn");
 	if (err_code == ERR_MAP)
 		return ("World map not valid");
+	if (err_code == ERR_TEX)
+		return ("Texture path not correct");
 	return ("some error occurred :)");
 }
 
@@ -89,7 +91,7 @@ void	put_err_msg(t_vars *vars, int exit_code)
 	{
 		printf("%sError\n%s", RED, RESET);
 		i = -1;
-		while (++i < 11)
+		while (++i < 13)
 		{
 			if (vars->map && ((1 << i) & vars->map->invalid))
 				printf("%s%s\n%s", RED, err_msg(1 << i), RESET);

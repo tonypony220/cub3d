@@ -71,7 +71,7 @@
 # define NUM_PARAMS 8
 # define NUM_MAP_PATHS 5
 
-# define ERR_COLOR  (1 << 0)
+# define ERR_COLOR  (1 <<  0)
 # define ERR_DBL    (1 << 1)
 # define ERR_PARAM  (1 << 2)
 # define ERR_FILE   (1 << 3)
@@ -81,6 +81,7 @@
 # define ERR_MALLOC (1 << 7)
 # define ERR_RSPWN	(1 << 8)
 # define ERR_MAP	(1 << 9)
+# define ERR_TEX	(1 << 10)
 
 typedef struct	s_sprite
 {

@@ -42,7 +42,7 @@ int			load_texture(t_vars *vars, int tex_num)
 	else
 		vars->texs[tex_num]->img = mlx_xpm_file_to_image(
 				vars->mlx, vars->map->texture_path[tex_num], &w, &h);
-	if (!vars->texs[tex_num]->img)
+	if (!vars->texs[tex_num]->img && (vars->map->invalid |= ERR_TEX))
 		return (0);
 	vars->texs[tex_num]->size[X] = w;
 	vars->texs[tex_num]->size[Y] = h;
