@@ -11,39 +11,35 @@ HEAD	=	cub3d.h
 
 CC		=	gcc
 
-RM		=	rm	-f
+RM		=	-rm	-f
 
 NAME	=	cub3D
 
 SUBDIRS := gnl libft mlx
 
-TOPTARGETS := all clean
+TOPTARGETS := all clean fclean
 
 $(TOPTARGETS): $(SUBDIRS)
+
+$(libs): $(SUBDIRS)
 
 $(SUBDIRS):
 		$(MAKE) -C $@ $(MAKECMDGOALS)
 
 %.o: %.c $(HEAD)
-		$(CC) -Imlx -Ignl -Ilibft ${CFLAGS} -c $< -o ${<:.c=.o} #
-		#${CC} ${CFLAGS} 	   -c $< -o ${<:.c=.o}
+		$(CC) -Imlx -Ignl -Ilibft ${CFLAGS} -c $< -o ${<:.c=.o}
 
-${NAME}: $(SUBDIRS) ${OBJS}
-		$(CC) ${OBJS} -Lmlx -lmlx -Lgnl -lgnl -Llibft -lft -lz -framework OpenGL -framework AppKit -o $(NAME)
-		#$(CC) ${OBJS} -o $(NAME)
-
-#${NAME}:	fclean	${OBJS} ${HEAD}
-#		@${CC} ${CFLAGS} -o ${NAME} ${OBJS}
+${NAME}: ${OBJS}
+		$(CC) ${OBJS} -Lmlx -lmlx -Lgnl -lgnl -Llibft -lft -lz -framework OpenGL -framework AppKit -o ${NAME}
 
 all:	${NAME}
 
 clean: $(SUBDIRS)
-		@${RM} ${OBJS}
+		${RM} ${OBJS}
 
 fclean: clean
-		@${RM}	${NAME}
+		${RM} ${NAME}
 
-re:		fclean	all
+re:     fclean	all
 
-.PHONY:	re	bonus  all	clean fclean $(SUBDIRS) $(TOPTARGETS)
-
+.PHONY:	re bonus all clean fclean $(SUBDIRS) $(TOPTARGETS)

@@ -78,7 +78,6 @@ void		init_player(t_vars *vars)
 		spawn_dir = 3;
 	vars->move = 0;
 	vars->player[SIZE] = RESIZE / 6;
-	//vars->player[ROTATE] = 0;
 	vars->player[RAD] = PI / 2 * spawn_dir;
 	vars->player[X] = vars->map->respawn[X] + 0.5;
 	vars->player[Y] = vars->map->respawn[Y] + 0.5;

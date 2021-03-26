@@ -16,7 +16,7 @@ NAME	=	libgnl.a
 		${CC} ${CFLAGS} -c $< -o ${<:.c=.o} 
 
 ${NAME}:	${OBJS} ${HEAD}
-		@ar rcs ${NAME} ${OBJS}
+		ar rcs ${NAME} ${OBJS}
 
 all:	${NAME}
 
@@ -29,5 +29,5 @@ fclean: clean
 
 re:		fclean	all
 
-.PHONY:	re	bonus	all	clean	fclean $(NAME)
+.PHONY:	re	bonus	all	clean	fclean 
 

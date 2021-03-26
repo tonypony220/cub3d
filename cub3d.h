@@ -40,6 +40,8 @@
 
 # define RESIZE 1
 
+# define COM 3
+
 # define X 0
 # define Y 1
 # define SIZE 2

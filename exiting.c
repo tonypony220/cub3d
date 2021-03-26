@@ -56,7 +56,7 @@ void	free_texs(t_vars *vars)
 	}
 }
 
-char 	*err_msg(int err_code)
+char	*err_msg(int err_code)
 {
 	if (err_code == ERR_COLOR)
 		return ("Can't parse color");
@@ -99,7 +99,6 @@ void	put_err_msg(t_vars *vars, int exit_code)
 		if (exit_code == 2)
 			printf("%sBad arguments\n%s", RED, RESET);
 	}
-
 }
 
 int		cub_exit(t_vars *vars, int exit_code)

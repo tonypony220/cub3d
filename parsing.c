@@ -14,32 +14,30 @@
 
 int				parse_color(char *line, int i, t_map *map)
 {
-	int			color[3];
+	int			clr[4];
 	int			k;
-	int			com;
 
 	k = -1;
-	com = 1;
-	ft_memset(color, 0, sizeof(color));
+	clr[COM] = 1;
 	while (++k < 3)
 	{
 		while (!((*line <= '9' && *line >= '0') || *line == '-')
-				&& *line && (com+= *line == ',') && (com+= *line == '+'))
+		&& *line && (clr[COM] += (1 && ft_strchr("-+,\t", *line))))
 			line++;
 		if (!*line)
 			map->invalid |= ERR_COLOR;
-		color[k] = ft_atoi(line);
-		if ((unsigned int)color[k] > 255)
+		clr[k] = ft_atoi(line);
+		if ((unsigned int)clr[k] > 255)
 			map->invalid |= ERR_COLOR;
 		while ((*line <= '9' && *line >= '0') && *line)
 			line++;
 	}
-	if (com != 3 || *line)
+	if (clr[COM] != 3 || *line)
 		map->invalid |= ERR_COLOR;
 	if (i == F)
-		map->floor_color = create_trgb(0, color[0], color[1], color[2]);
+		map->floor_color = create_trgb(0, clr[0], clr[1], clr[2]);
 	else if (i == C)
-		map->ceiling_color = create_trgb(0, color[0], color[1], color[2]);
+		map->ceiling_color = create_trgb(0, clr[0], clr[1], clr[2]);
 	return (0);
 }
 
@@ -75,7 +73,7 @@ void			parse_line(char *line, t_map *map)
 			else if (i == R)
 				parse_resolution(p + 1, map);
 			else
-				parse_color(p + 1, i, map);
+				parse_color(p + 2, i, map);
 			return ;
 		}
 	}
@@ -128,12 +126,11 @@ void			parse_map(char *filename, t_map *map, int *var)
 	while (get_next_line(fd, &line) > 0)
 	{
 		if (var[COUNTER] < var[NUMBER_LINE_MAP_FROM] && ft_strlen(line) > 1)
-				parse_line(line, map);
+			parse_line(line, map);
 		else if (var[COUNTER] >= var[NUMBER_LINE_MAP_FROM]
 		&& ((ft_strlen(line) > 1 && only_symbols("\t 012NSWE", line))
 		|| (map->invalid |= ERR_MAP)))
-		
-		fill_map(map, line);
+			fill_map(map, line);
 		free(line);
 		var[COUNTER]++;
 	}
