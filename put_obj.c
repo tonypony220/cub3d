@@ -26,7 +26,7 @@ void			put_player(t_vars *vars)
 		find_ray_dir_and_initial_len(vars, &cords);
 		cast_ray(vars, &cords);
 		calculate_perp_dist(vars, &cords);
-		line_len = (vars->map->resolution_hight * RESIZE / cords.perp * vars->win_k);
+		line_len = (vars->map->resolution_hight / cords.perp * vars->win_k);
 		if (cords.perp == 0)
 			line_len = vars->map->resolution_hight;
 		vars->map->zbuf[x] = cords.perp;
