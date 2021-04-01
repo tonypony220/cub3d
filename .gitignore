@@ -9,7 +9,6 @@ a.out
 m.c
 .idea
 libftpics
-pics
 .DS_Store
 floor.c
 sprite.c
@@ -17,6 +16,7 @@ circle.c
 scr_shot.bmp
 map0.cub
 run.dSYM/
+pics
 cub3D
 *.a
 staff
