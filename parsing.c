@@ -45,7 +45,7 @@ static void		parse_resolution(char *p, t_map *map)
 {
 	if (!only_symbols("1234567890 \t", p))
 		map->invalid |= ERR_RES;
-	while (*p > '9' && *p < '0')
+	while ((*p > '9' || *p < '0'))
 		p++;
 	map->resolution_width = ft_atoi(p);
 	while (*p <= '9' && *p >= '0')

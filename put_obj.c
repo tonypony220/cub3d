@@ -26,10 +26,9 @@ void			put_player(t_vars *vars)
 		find_ray_dir_and_initial_len(vars, &cords);
 		cast_ray(vars, &cords);
 		calculate_perp_dist(vars, &cords);
-		line_len = (vars->map->resolution_hight * RESIZE / cords.perp);
+		line_len = (vars->map->resolution_hight * RESIZE / cords.perp * vars->win_k);
 		if (cords.perp == 0)
 			line_len = vars->map->resolution_hight;
-		line_len = (int)(line_len * vars->win_k);
 		vars->map->zbuf[x] = cords.perp;
 		find_x_texture_cord(&cords, vars);
 		put_textured_line(vars, line_len, &cords, x);
