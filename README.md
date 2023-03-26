@@ -4,9 +4,16 @@ It uses miniLibX (OpenGL) to display and a tiny amount of linux functions (restr
  
 Idea of project is to create a “realistic” 3D graphical
 representation of the inside of a maze from a
-first-person perspective using the Ray-Casting principles (like in Wolfenshtein 3d)
+first-person perspective using the Ray-Casting principles (like in Wolfenshtein 3d). 
 
-Image adopting for screen size, which you could change in file , but it uses a lot of CPU, 
-there are map, which you could change, but it should be valid, otherwise you will got an error
+All calculations are slow because only CPU cast each ray wtih simple DDA algorithm.
+Image adopting for screen size, which you could set. 
+There are map, which you could change, but it should be valid, otherwise you will got an error. Letters (NSWE) are shortcuts for directions. 
+Also you colud adjust the color of floor(F) and ceil(C). And to change texture just upload it to project and set in config. 
+And it's possible to make screenshot and get handmade BMP file! :)
 
-To make it display faster used simple buffer
+If you do the same project and wonder why it moves so smooth, answer in event with keyboard. 
+To make it display faster used simple standart buffer (like slow IN/OUT operation).
+
+to run `./cub3D map.cub`
+second argument is file with settings 
