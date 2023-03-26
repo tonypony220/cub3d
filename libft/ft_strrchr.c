@@ -1,18 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   color.c                                            :+:      :+:    :+:   */
+/*   ft_strrchr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mehtel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/23 20:04:46 by mehtel            #+#    #+#             */
-/*   Updated: 2021/03/23 20:05:54 by mehtel           ###   ########.fr       */
+/*   Created: 2020/11/14 23:12:07 by mehtel            #+#    #+#             */
+/*   Updated: 2020/11/14 23:40:32 by mehtel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub3d.h"
+#include "libft.h"
 
-int	create_trgb(int t, int r, int g, int b)
+char	*ft_strrchr(const char *s, int c)
 {
-	return (t << 24 | r << 16 | g << 8 | b);
+	char *p;
+
+	p = 0;
+	while (*s || *s == (char)c)
+	{
+		if (*s == (char)c)
+			p = (char*)s;
+		if (!*s)
+			return (p);
+		s++;
+	}
+	return (p);
 }

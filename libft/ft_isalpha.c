@@ -1,18 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   color.c                                            :+:      :+:    :+:   */
+/*   ft_isalpha.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mehtel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/23 20:04:46 by mehtel            #+#    #+#             */
-/*   Updated: 2021/03/23 20:05:54 by mehtel           ###   ########.fr       */
+/*   Created: 2020/11/14 23:42:50 by mehtel            #+#    #+#             */
+/*   Updated: 2020/11/14 23:43:07 by mehtel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub3d.h"
+#include "libft.h"
 
-int	create_trgb(int t, int r, int g, int b)
+static int		ft_isupper(int c)
 {
-	return (t << 24 | r << 16 | g << 8 | b);
+	return (c >= 65 && c <= 90);
+}
+
+static int		ft_islower(int c)
+{
+	return (c >= 97 && c <= 122);
+}
+
+int				ft_isalpha(int c)
+{
+	return (ft_islower(c) || ft_isupper(c));
 }

@@ -1,18 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   color.c                                            :+:      :+:    :+:   */
+/*   ft_atoi.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mehtel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/23 20:04:46 by mehtel            #+#    #+#             */
-/*   Updated: 2021/03/23 20:05:54 by mehtel           ###   ########.fr       */
+/*   Created: 2020/11/14 23:36:16 by mehtel            #+#    #+#             */
+/*   Updated: 2020/11/14 23:38:58 by mehtel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub3d.h"
+#include "libft.h"
 
-int	create_trgb(int t, int r, int g, int b)
+int			ft_atoi(char *str)
 {
-	return (t << 24 | r << 16 | g << 8 | b);
+	int		sign;
+	long	num;
+
+	num = 0;
+	while (*str == 32 || (*str >= 9 && *str <= 13))
+		str++;
+	sign = (*str == '-') ? -1 : 1;
+	(*str == '-' || *str == '+') ? str++ : str;
+	while (*str >= '0' && *str <= '9')
+	{
+		if ((num = num * 10 + *str++ - '0') < 0)
+			return (sign > 0 ? -1 : 0);
+	}
+	return ((int)num * sign);
 }

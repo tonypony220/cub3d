@@ -1,18 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   color.c                                            :+:      :+:    :+:   */
+/*   ft_lstadd_back.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mehtel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/23 20:04:46 by mehtel            #+#    #+#             */
-/*   Updated: 2021/03/23 20:05:54 by mehtel           ###   ########.fr       */
+/*   Created: 2020/11/15 00:00:44 by mehtel            #+#    #+#             */
+/*   Updated: 2020/11/15 00:00:47 by mehtel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub3d.h"
+#include "libft.h"
 
-int	create_trgb(int t, int r, int g, int b)
+void		ft_lstadd_back(t_list **lst, t_list *new)
 {
-	return (t << 24 | r << 16 | g << 8 | b);
+	t_list	*last;
+
+	if ((last = ft_lstlast(*lst)))
+		last->next = new;
+	else
+		*lst = new;
 }

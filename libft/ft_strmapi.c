@@ -1,18 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   color.c                                            :+:      :+:    :+:   */
+/*   ft_strmapi.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mehtel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/23 20:04:46 by mehtel            #+#    #+#             */
-/*   Updated: 2021/03/23 20:05:54 by mehtel           ###   ########.fr       */
+/*   Created: 2020/11/14 23:56:11 by mehtel            #+#    #+#             */
+/*   Updated: 2020/11/14 23:56:37 by mehtel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub3d.h"
+#include "libft.h"
 
-int	create_trgb(int t, int r, int g, int b)
+char				*ft_strmapi(char const *s, char (*f)(unsigned int, char))
 {
-	return (t << 24 | r << 16 | g << 8 | b);
+	char			*str;
+	unsigned int	i;
+
+	if (!(str = (char*)malloc(sizeof(char) * (ft_strlen((char*)s) + 1))))
+		return (str);
+	i = -1;
+	while (s[++i])
+		str[i] = f(i, s[i]);
+	str[i] = '\0';
+	return (str);
 }

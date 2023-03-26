@@ -1,18 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   color.c                                            :+:      :+:    :+:   */
+/*   ft_putnbr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mehtel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/23 20:04:46 by mehtel            #+#    #+#             */
-/*   Updated: 2021/03/23 20:05:54 by mehtel           ###   ########.fr       */
+/*   Created: 2020/11/14 23:58:32 by mehtel            #+#    #+#             */
+/*   Updated: 2020/11/14 23:58:42 by mehtel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub3d.h"
+#include "libft.h"
 
-int	create_trgb(int t, int r, int g, int b)
+void	ft_putnbr_fd(int n, int fd)
 {
-	return (t << 24 | r << 16 | g << 8 | b);
+	int sign;
+
+	sign = n >= 0 ? 1 : -1;
+	(sign < 0) ? ft_putchar_fd('-', fd) : sign;
+	if (n > 10 || n < 0)
+		ft_putnbr_fd((n / 10) * sign, fd);
+	ft_putchar_fd(((n % 10) * sign) + '0', fd);
 }

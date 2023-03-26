@@ -1,18 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   color.c                                            :+:      :+:    :+:   */
+/*   ft_putstr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mehtel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/23 20:04:46 by mehtel            #+#    #+#             */
-/*   Updated: 2021/03/23 20:05:54 by mehtel           ###   ########.fr       */
+/*   Created: 2020/09/20 16:50:14 by mehtel            #+#    #+#             */
+/*   Updated: 2020/09/21 20:34:30 by mehtel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub3d.h"
+#include "libft.h"
+#include <unistd.h>
 
-int	create_trgb(int t, int r, int g, int b)
+void		ft_putstr(char *str)
 {
-	return (t << 24 | r << 16 | g << 8 | b);
+	while (*str)
+		write(1, str++, 1);
 }

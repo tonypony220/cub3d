@@ -1,18 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   color.c                                            :+:      :+:    :+:   */
+/*   ft_memcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mehtel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/23 20:04:46 by mehtel            #+#    #+#             */
-/*   Updated: 2021/03/23 20:05:54 by mehtel           ###   ########.fr       */
+/*   Created: 2020/11/14 23:04:42 by mehtel            #+#    #+#             */
+/*   Updated: 2020/11/14 23:05:14 by mehtel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub3d.h"
+#include "libft.h"
 
-int	create_trgb(int t, int r, int g, int b)
+int	ft_memcmp(const void *s1, const void *s2, size_t n)
 {
-	return (t << 24 | r << 16 | g << 8 | b);
+	if (!n)
+		return (0);
+	while (*(unsigned char*)s1 == *(unsigned char*)s2 && --n)
+	{
+		s1++;
+		s2++;
+	}
+	return (*(unsigned char*)s1 - *(unsigned char*)s2);
 }

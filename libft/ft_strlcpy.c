@@ -1,18 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   color.c                                            :+:      :+:    :+:   */
+/*   ft_strlcpy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mehtel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/23 20:04:46 by mehtel            #+#    #+#             */
-/*   Updated: 2021/03/23 20:05:54 by mehtel           ###   ########.fr       */
+/*   Created: 2020/11/14 23:09:03 by mehtel            #+#    #+#             */
+/*   Updated: 2020/11/14 23:09:28 by mehtel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub3d.h"
+#include "libft.h"
 
-int	create_trgb(int t, int r, int g, int b)
+size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
 {
-	return (t << 24 | r << 16 | g << 8 | b);
+	int len;
+
+	len = ft_strlen((char *)src);
+	if (dstsize)
+	{
+		while (--dstsize)
+		{
+			if (*src)
+				*dst++ = *src++;
+		}
+		*dst = '\0';
+	}
+	return (len);
 }

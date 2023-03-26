@@ -1,18 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   color.c                                            :+:      :+:    :+:   */
+/*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mehtel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/23 20:04:46 by mehtel            #+#    #+#             */
-/*   Updated: 2021/03/23 20:05:54 by mehtel           ###   ########.fr       */
+/*   Created: 2020/11/14 23:55:26 by mehtel            #+#    #+#             */
+/*   Updated: 2020/11/14 23:56:00 by mehtel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub3d.h"
+#include "libft.h"
 
-int	create_trgb(int t, int r, int g, int b)
+char		*ft_itoa(int n)
 {
-	return (t << 24 | r << 16 | g << 8 | b);
+	int		len;
+	int		tmp;
+	char	*str;
+	int		sign;
+
+	tmp = n;
+	sign = n >= 0 ? 1 : -1;
+	len = 1;
+	while (tmp /= 10)
+		len++;
+	(sign > 0) ? len : len++;
+	if ((str = malloc(sizeof(char) * len + 1)))
+	{
+		str[len] = '\0';
+		while (len--)
+		{
+			str[len] = (sign < 0 && !len) ? '-' : n % 10 * sign + '0';
+			n = n / 10;
+		}
+	}
+	return (str);
 }

@@ -1,18 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   color.c                                            :+:      :+:    :+:   */
+/*   ft_memccpy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mehtel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/23 20:04:46 by mehtel            #+#    #+#             */
-/*   Updated: 2021/03/23 20:05:54 by mehtel           ###   ########.fr       */
+/*   Created: 2020/11/14 22:55:01 by mehtel            #+#    #+#             */
+/*   Updated: 2020/11/14 23:01:38 by mehtel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub3d.h"
+#include <string.h>
 
-int	create_trgb(int t, int r, int g, int b)
+void	*ft_memccpy(void *dst, const void *src, int c, size_t n)
 {
-	return (t << 24 | r << 16 | g << 8 | b);
+	while (n--)
+	{
+		*((unsigned char*)dst) = *((unsigned char*)src);
+		if (*((unsigned char*)src) == (unsigned char)c)
+			return ((void *)++dst);
+		src++;
+		dst++;
+	}
+	return (0);
 }

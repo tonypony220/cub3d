@@ -1,18 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   color.c                                            :+:      :+:    :+:   */
+/*   ft_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mehtel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/23 20:04:46 by mehtel            #+#    #+#             */
-/*   Updated: 2021/03/23 20:05:54 by mehtel           ###   ########.fr       */
+/*   Created: 2020/09/17 20:18:09 by mehtel            #+#    #+#             */
+/*   Updated: 2020/11/14 23:47:32 by mehtel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub3d.h"
+#include "libft.h"
 
-int	create_trgb(int t, int r, int g, int b)
+char		*ft_strdup(const char *src)
 {
-	return (t << 24 | r << 16 | g << 8 | b);
+	char	*tmp;
+	char	*dup;
+
+	if (!(dup = malloc(sizeof(*dup) * (ft_strlen((char*)src) + 1))))
+		return (0);
+	tmp = dup;
+	while (*src)
+		*tmp++ = *src++;
+	*tmp = '\0';
+	return (dup);
 }
