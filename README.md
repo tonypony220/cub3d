@@ -12,8 +12,8 @@ There are map, which you could change, but it should be valid, otherwise you wil
 Also you colud adjust the color of floor(F) and ceil(C). And to change texture just upload it to project and set in config. 
 And it's possible to make screenshot and get handmade BMP file! :)
 
-If you do the same project and wonder why it moves so smooth, answer in event with keyboard. 
-To make it display faster used simple standart buffer (like slow IN/OUT operation).
+If you do the same project and wonder why it moves so smooth - see the answer in code of events with keyboard. 
+To make it display faster used simple buffering (like buffering slow write/read operation).
 
 to run `./cub3D map.cub`
 second argument is file with settings 
